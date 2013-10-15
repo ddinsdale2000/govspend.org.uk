@@ -1,0 +1,127 @@
+h1 {
+     color:#3366FF;
+     background-color:#ffffff;
+     text-align:left;
+   }
+h2 { 
+     color:#3366FF;
+     background-color:#ffffff;
+     text-align:left;
+     margin-left:.5cm;   
+   }
+h3 {   
+     color:#3366FF;
+     background-color:#ffffff;
+     text-align:left;
+     margin-left:.5cm;   
+  } 
+h4 {   
+
+     text-align:left;
+     margin-left:.5cm;   
+  }   
+p {
+     font-family:Arial, Helvetica, sans-serif;
+     font-size:110%;
+     margin-left:1cm;
+     margin-right:0cm;
+  }
+  
+ul {
+     font-family:Arial, Helvetica, sans-serif;
+     margin-left:1cm;
+     margin-right:1cm;
+     font-size:100%;
+}
+
+#tv_nav {
+     margin-left:1cm;
+     margin-right:1cm;
+     margin-top:.25cm;  
+     margin-bottom:.25cm;
+     background-color:#ccffff;
+     color:#ffffff;
+     font-size:125%;
+}
+
+body {margin:auto; width:800px;}
+a { display:block; }
+#navborder { float:left; width:180px; }
+#left_nav  { padding:1em; float:left; width:170px; border:solid blue 1px; border-radius:1em;}
+#navfooter { padding:1em; float:left; width:170px; border:solid blue 1px; border-radius:1em;}
+#navfooter p {margin:0 0 0 0;}
+#left_nav p {margin:0 0 0 0;}
+#footer p {margin:0 0 0 0;}
+#articleborder {float:right; width:70%; border:solid blue 1px; border-radius:1em;}
+#articlecontent {background-color:#FFFFFF;}
+
+#ddcolortabs{
+margin-left: 4px;
+padding: 0;
+width: 100%;
+background: transparent;
+voice-family: "\"}\"";
+voice-family: inherit;
+padding-left: 5px;
+}
+
+#ddcolortabs ul{
+font: bold 11px Arial, Verdana, sans-serif;
+margin:0;
+padding:0;
+list-style:none;
+}
+
+#ddcolortabs li{
+display:inline;
+margin:0 2px 0 0;
+padding:0;
+text-transform:uppercase;
+}
+
+
+#ddcolortabs a{
+float:left;
+color: white;
+background: #3366FF url(color_tabs_left.gif) no-repeat left top;
+margin:0 2px 0 0;
+padding:0 0 1px 3px;
+text-decoration:none;
+letter-spacing: 1px;
+}
+
+#ddcolortabs a span{
+float:left;
+display:block;
+background: transparent url(color_tabs_right.gif) no-repeat right top;
+padding:4px 9px 2px 6px;
+}
+
+#ddcolortabs a span{
+float:none;
+}
+
+
+#ddcolortabs a:hover{
+background-color: #8cb85c;
+}
+
+#ddcolortabs a:hover span{
+background-color: #8cb85c;
+}
+
+#ddcolortabs #current a, #ddcolortabs #current span{ /*currently selected tab*/
+background-color: #8cb85c;
+}
+
+#ddcolortabsline{
+clear: both;
+padding: 0;
+width: 100%;
+height: 8px;
+line-height: 8px;
+background: #3366FF;
+border-top: 1px solid #fff; /*Remove this to remove border between bar and tabs*/
+}
+
+

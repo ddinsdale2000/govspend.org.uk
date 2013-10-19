@@ -34,9 +34,9 @@
       </p>
       <center>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
-      <p> <a href="index.php" class=tv_button>Not yet working</a></p>
+      <p> <a href="news.php" class=tv_button>G-Cloud News</a></p>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
-      <p> <a href="index.php" class=tv_button>Not yet working</a></p>
+<!--      <p> <a href="index.php" class=tv_button>Not yet working</a></p> -->
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
       </center>
     </nav>
@@ -117,9 +117,8 @@
       
       <p style="size:10pt; background-color:#3366FF; color:#ffffff; border-radius:1em; text-align:center; padding:2px;">News</p>
       <p style = "color:#3366ff; font-size:10pt"><br><b>Recent updates</b> </p>
-      <p style = "color:#3366ff; font-size:10pt"><br>Oct 2013 - Added ......</p>
-      <p style = "color:#3366ff; font-size:10pt"><br>Sep 2013 - Added ......</p>
-      <p style = "color:#3366ff; font-size:10pt"><br>Jul 2013 - Added .......</p> 
+      <p style = "color:#3366ff; font-size:10pt"><br>Oct 18, 2013 - G-Cloud September spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Oct 11, 2013 - Follow us on twitter to get news directly - @GovSpendOrgUK.</p>
     </div>
   </div>
   

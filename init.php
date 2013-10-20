@@ -11,8 +11,8 @@ $dbp = "";
 $server="http://localhost/govspend";
 /* for fasthost hosting */
 
-//$dbh = "213.171.200.50";
-//$dbu = "hackday";
-//$dbp = "h4ckd4y!";
+//$dbh = "";
+//$dbu = "";
+//$dbp = "";
 // $server = "http://www.govspend.org.uk";
 ?>

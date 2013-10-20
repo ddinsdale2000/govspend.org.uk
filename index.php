@@ -129,8 +129,13 @@
       <h3>What do we do?</h3>
       <p>GovSpend.Org.UK analyses published Government data that allows you to understand:</p>
       <p><ul>
-      <li><b>Spend Pipeline</b> - What Government is planning to spend over the next six years - data includes contact details of the lead procurer.</li>
-      <li><b>G-Cloud Spend</b> - What Government has spent, with whom and for how much - allowing you to understand the G-Cloud market for your products and services</li>
+      <li><b>Spend Pipeline</b> - What Government is planning to spend over the next six years - data includes contact details of the lead procurer and links back to the original notices posted on Government's Contracts Finder service.</li>
+      <li><b>G-Cloud Spend</b> - What Government has spent, with whom and for how much - allowing you to understand the G-Cloud market for your products and services.
+             For example, if you supply 'Agile' services, the following links will show you <ul>
+             <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Customer&rank=total&scope=all&term=Agile" alt = "G-Cloud Agile Sales - showing customers">Who's buying 'Agile'</a></li>
+             <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Product&rank=total&scope=all&term=Agile" alt = "G-Cloud Agile Sales - showing products">What's being bought</a></li>
+             <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Supplier&rank=total&scope=all&term=Agile" alt = "G-Cloud Agile Sales - showing suppliers">Who's supplying 'Agile'</a></li></ul> 
+             You can do your own searches for other products and services by selecting 'G-CLOUD SPEND' from the menu above.</li>
       <li><b>Other tools</b> are under development.</li>
       </p></ul>
       <p>This site is currently under development.  The data is correct and the site works but may be taken down at any time without notice.  The site will be launched at the end of November 2013.</p>   

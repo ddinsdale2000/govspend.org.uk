@@ -78,7 +78,7 @@
 </ul>
 <h3>New suppliers</h3>
 <p>The framework welcomed 14 new suppliers who reported their first revenue this month (bringing the total to 189).  This 
-included a rather spectacular first month for Acuma Solutions Limited who jumped to sixth overall based on a significant amount
+included a rather spectacular first month for Acuma Solutions Limited who jumped to seventeenth overall based on a significant amount
 of business with Home Office.  The new suppliers were:</p>
 
 <ul>
@@ -86,7 +86,7 @@ of business with Home Office.  The new suppliers were:</p>
    echo "<div class=\"datagrid\"><table>";
    echo "<thead>";
    echo "<tr>";
-   echo "<th>Customer</th>"; 
+   echo "<th>Supplier</th>"; 
    echo "<th align = \"right\">Total</th>";
    echo "</tr>";
    echo "</thead><tbody>";
@@ -141,6 +141,10 @@ of business with Home Office.  The new suppliers were:</p>
 <li>July - from £7.1m to £7.9m</li>
 <li>August - from £5.1m to £6.8m</li>
 </ul>
+<h3>Presentation</h3>
+<p>A presentation containing these facts and other data can be found on Slide Share.  You can copy and use the presentation under a Creative Commons Attribution license (see creativecommons.org):</p>
+<p><iframe src="http://www.slideshare.net/GovSpendOrgUK/slideshelf" width="615px" height="470px" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:none;" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+</p>
 <?php include ("footer.php"); ?>
 </body>
 </html>

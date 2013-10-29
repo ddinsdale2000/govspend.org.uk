@@ -47,10 +47,12 @@
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
       <p style ="color:#3366ff; font-size:10pt"><a href="https://online.contractsfinder.businesslink.gov.uk/data-feed.aspx" alt = "Contracts Finder data page">Spend Pipeline data<br>(you may need to click twice)</a></p>
       <p style ="color:#3366ff; font-size:10pt">&nbsp</p>
+      <p style ="color:#3366ff; font-size:10pt"><a href="http://data.gov.uk/dataset/government-construction-pipeline" alt = "Construction pipeline on data.gov">Construction Pipeline data</a></p>
+      <p style ="color:#3366ff; font-size:10pt">&nbsp</p>
       <p style ="color:#3366ff; font-size:10pt"><a href="http://gcloud.civilservice.gov.uk/about/sales-information/" alt = "G-Cloud Sales Information">G-Cloud Spend data</a></p>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
       <p style="size:10pt; background-color:#3366FF; color:#ffffff; border-radius:1em; text-align:center; padding:2px;">Analytics</p>
-      <p style = "color:#3366ff; font-size:10pt"><br><b>Pipeline (as at 7 Oct 13)</b> </p>
+      <p style = "color:#3366ff; font-size:10pt"><br><b>Spend Pipeline</b> </p>
 
       <?php
         $target_date = Date("Y-m-d");
@@ -91,17 +93,64 @@
         $total_spend += $spend[0];
         echo "<p style = \"color:#3366ff; font-size:10pt\">  - 2018: ".str_repeat("&nbsp",17)."£".number_format(intval($spend[0]))."m</p>";
 
-        echo "<p style = \"color:#3366ff; font-size:10pt\">Total Pipeline: ".str_repeat("&nbsp",3)." £".number_format(intval($total_spend))."m</p>";
-
 // Not sure whether this figure is useful
 //        $sql = "SELECT sum(`TotalCapitalCost`)/1000000 as 'TotalCapitalCost' FROM pipeline WHERE 1";
 //        $result=mysqli_query($cxn,$sql);
 //        $spend = mysqli_fetch_row($result);
 //        echo "<p style = \"color:#3366ff; font-size:10pt\">Total Capex:  £".number_format(intval($spend[0]))."m</p>";
 
+        echo "<p style = \"color:#3366ff; font-size:10pt\">Total Pipeline: ".str_repeat("&nbsp",3)." £".number_format(intval($total_spend))."m</p>";
 ?>
-       <p style = "color:#3366ff; font-size:10pt"><br><b>G-Cloud Spend</b> </p>
+        <p style = "color:#3366ff; font-size:10pt">Data as at 7 Oct 13 </p>
+        <p style = "color:#3366ff; font-size:10pt"><br><b>Construction pipeline</b> </p>
       <?php
+        $target_date = Date("Y-m-d");
+        $total_spend =0;
+        $sql = "SELECT sum(`spend_financial2013_14`) as 'FY13_14' FROM construction WHERE 1";
+        $result=mysqli_query($cxn,$sql);
+        $spend = mysqli_fetch_row($result);
+        $total_spend = $spend[0];
+        //mysqli_close($result);
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - 2013: ".str_repeat("&nbsp",14)."£".number_format(intval($spend[0]))."m</p>";
+
+        $sql = "SELECT sum(`spend_financial2014_15`) as 'FY14_15' FROM construction WHERE 1";
+        $result=mysqli_query($cxn,$sql);
+        $spend = mysqli_fetch_row($result);
+        $total_spend = $total_spend+$spend[0];
+        //mysqli_close($result);
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - 2014: ".str_repeat("&nbsp",14)."£".number_format(intval($spend[0]))."m</p>";
+
+        $sql = "SELECT sum(`spend_financial2015_16`) as 'FY15_16' FROM construction WHERE 1";
+        $result=mysqli_query($cxn,$sql);
+        $spend = mysqli_fetch_row($result);
+        $total_spend = $total_spend+$spend[0];
+        //mysqli_close($result);
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - 2015: ".str_repeat("&nbsp",14)."£".number_format(intval($spend[0]))."m</p>";
+
+        $sql = "SELECT sum(`total2016_20`) as 'FY16_20' FROM construction WHERE 1";
+        $result=mysqli_query($cxn,$sql);
+        $spend = mysqli_fetch_row($result);
+        $total_spend = $total_spend+$spend[0];
+        //mysqli_close($result);
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - 16-20: ".str_repeat("&nbsp",13)."£".number_format(intval($spend[0]))."m</p>";
+
+        $sql = "SELECT sum(`total2020_beyond`) as 'FY20' FROM construction WHERE 1";
+        $result=mysqli_query($cxn,$sql);
+        $spend = mysqli_fetch_row($result);
+        $total_spend = $total_spend+$spend[0];
+        //mysqli_close($result);
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - 2020+ ".str_repeat("&nbsp",13)."£".number_format(intval($spend[0]))."m</p>";
+
+        echo "<p style = \"color:#3366ff; font-size:10pt\">Total Pipeline: ".str_repeat("&nbsp",1)." £".number_format(intval($total_spend))."m</p>";
+?>
+        <p style = "color:#3366ff; font-size:10pt">Data as at 7 Oct 13 </p>
+
+       <p style = "color:#3366ff; font-size:10pt"><br><b>G-Cloud Spend</b> </p>
+
+      <?php
+
+
+
         $sql = "SELECT `For_Month` , sum(`Total_Charge`)/10000  FROM `g-cloud` group by `For_Month` desc";
         $result=mysqli_query($cxn,$sql);
         $spend = mysqli_fetch_row($result);
@@ -112,6 +161,7 @@
         $spend = mysqli_fetch_row($result);
         echo "<p style = \"color:#3366ff; font-size:10pt\">  - To date: ".str_repeat("&nbsp",16)."£".number_format(intval($spend[0]))."m</p>";
       ?>
+        <p style = "color:#3366ff; font-size:10pt">Data to end Sep 13 </p>
 
       <p>&nbsp</p>
       
@@ -130,6 +180,7 @@
       <p>GovSpend.Org.UK analyses published Government data that allows you to understand:</p>
       <p><ul>
       <li><b>Spend Pipeline</b> - What Government is planning to spend over the next six years - data includes contact details of the lead procurer and links back to the original notices posted on Government's Contracts Finder service.</li>
+      <li><b>Construction Pipeline</b> - Government planned spend on construction.</li>
       <li><b>G-Cloud Spend</b> - What Government has spent, with whom and for how much - allowing you to understand the G-Cloud market for your products and services.
              For example, if you supply 'Agile' services, the following links will show you <ul>
              <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Customer&rank=total&scope=all&term=Agile" alt = "G-Cloud Agile Sales - showing customers">Who's buying 'Agile'</a></li>

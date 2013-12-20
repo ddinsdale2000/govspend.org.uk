@@ -29,6 +29,7 @@
    					   //   - Supplier - shows the spend details for suppliers
    					   //   - Customer - show the spend details for customers
    $rank = $_GET['rank']; // Specifies the sort order of the customer and supplier lists
+   if (strlen($rank) == 0) {$rank = "total";}
    $term = $_GET['term']; // Specifies the product string to search for
    if (strlen($type)==0) 
      {if (strlen($term)>0) 

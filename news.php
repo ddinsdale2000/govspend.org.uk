@@ -32,17 +32,18 @@
 </ul>
 <p>Spread of the framework</p>
 <ul>
-<li>21 new customers joined the framework this month (bringing the total to 327).</li> 
-<li>13 new suppliers joined the framework this month (bringing the total to 217).</li> 
+<li>21 new customers joined the framework this month (bringing the total to 336).</li> 
+<li>13 new suppliers joined the framework this month (bringing the total to 212).</li> 
 </ul>
 <p>Forecasts</p>
 <ul>
 <li>We forecast the first £10m month this year, delighted to report that November was the first £10m+ month.</li>
-<li>Forecast spend for 2013 should exceed £75m comfortably and may exceed £80m</li>
-<li>Forecast spend for 2014 of between £100m and £150m is reasonable.  £200m would not be a surprise.</li>
+<li>We have increased the forecast spend for 2013 from £75m to £80m</li>
+<li>We have increased the forecast spend for 2014 to £150m.  Based on growth rates in both spend and the number
+ of organisations using the framework, £200m+ would not be a surprise in 2014 and £250m suddenly seems possible.</li>
 </ul>
-<h3>Further details including a downloadable presentation of this month's data can be found at:</h3>
-<p>We are working on the presentation</p>
+<h3>You are welcome to use and copy any information on this site (including the presentations) as long as you attribute to GovSpend.Org.UK </h3>
+<p><iframe src="http://www.slideshare.net/slideshow/embed_code/29409800" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe></p>
 
 <h3>Previous news releases and presentations can be found at</h3>
 <p> <a href="news-2013-11.php">G-Cloud News - November 2013</a></p>

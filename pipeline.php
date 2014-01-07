@@ -20,10 +20,10 @@
     $cxn = mysqli_connect("$dbh", "$dbu", "$dbp", "govspend")or die("cannot connect"); 
 
 ?> 
-
+<h1>This section of the website is being updated.  It should be back up and running by 20th Jan 2014.</h1>
+<!--
 <h1>Spend Pipeline - £m</h1>
 
-<!-- Table code from http://tablestyler.com/#-->
 <div class="datagrid"><table>
   <colgroup>
     <col span="1" style="width: 20%;">
@@ -110,6 +110,7 @@
 
 <h2>Notes</h2>
 <p>Figures are in £m (£1m = £1,000,000).  If a total is £0, click the name of the organisation to see the detail.  The total may be less than £1m or the organisation may have not entered a value at this time.</p> 
+-->
 <?php include ("footer.php"); ?>
 </body>
 </html>

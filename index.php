@@ -198,8 +198,9 @@
              <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Supplier&rank=total&scope=all&term=Agile" alt = "G-Cloud Agile Sales - showing suppliers">Who's supplying 'Agile'</a></li></ul> 
              You can do your own searches for other products and services by selecting 'G-CLOUD SPEND' from the menu above.</li>
       <li><b>Spend Pipeline</b> - What Government is planning to spend over the next six years - data includes contact details of the lead procurer and links back to the original notices posted on Government's Contracts Finder service.</li>
-      <li><b>Construction Pipeline</b> - Government planned spend on construction.</li>
+<!--      <li><b>Construction Pipeline</b> - Government planned spend on construction.</li>
       <li><b>Other tools</b> are under development.</li>
+-->
       </p></ul>
       <p>This site is currently under development.  The data is correct and the site works but may be taken down at any time without notice.  The site will be launched at the end of November 2013.</p>   
       <h3>Thank you</h3>

@@ -14,7 +14,7 @@
  */
     include_once("analyticstracking.php");
     include('header_main.php'); 
-    include('menu1.php');
+    include('menu_contact.php');
 ?> 
 
 <h1>Contact Us</h1>

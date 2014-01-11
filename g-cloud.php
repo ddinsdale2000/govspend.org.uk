@@ -16,7 +16,7 @@
  */
    include_once("analyticstracking.php");
    include('header_main.php'); 
-   include('menu1.php');
+   include('menu_g_cloud.php');
    include("init.php");  
    $cxn = mysqli_connect("$dbh", "$dbu", "$dbp", "govspend")or die("cannot connect"); 
 // Calculate the number of records that are being analysed

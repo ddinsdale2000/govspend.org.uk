@@ -20,10 +20,7 @@
 <h1>Contact Us</h1>
 <p>We would be delighted to hear from you.  Please send an email to</p> 
 <p> <a href= "mailto:support@tgovspend.org.uk" >support@govspend.org.uk</a></p>
-<p>As this web site is developed in our spare time, responses will be a day or so following your note</p>
-
-<p>This site is pre-launch in Alpha.  We are still figuring it out.  All should work but we may take the service
-down with no notice to update it.  We expect to launch end November 2013.:</p>
+<p>We are continually developing the site, so if you have any ideas of new features that would be helpful, let us know.</p>
 
 <?php include ("footer.php"); ?>
 </body>

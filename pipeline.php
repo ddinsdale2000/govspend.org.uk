@@ -32,10 +32,10 @@
     if (strlen($name) == 0) {$name = "all"; }
 
     echo "<h2>Search Spend Pipeline</h1>";
-    echo "<p style = \"color:#3366ff; font-size:10pt\">This week (13th - 17th Jan 2014) we are testing this capability.  
-    All is working fine but if you spot any issues (or have ideas) please send to : <a href= \"mailto:support@tgovspend.org.uk\" style= \"display:inline\">support@govspend.org.uk</a></p>";
+ //   echo "<p style = \"color:#3366ff; font-size:10pt\">This week (13th - 17th Jan 2014) we are testing this capability.  
+ //   All is working fine but if you spot any issues (or have ideas) please send to : <a href= \"mailto:support@tgovspend.org.uk\" style= \"display:inline\">support@govspend.org.uk</a></p>";
     if (strlen($term) == 0 ) {echo "<h2>Searching for - All records</h2>";}
-    else {echo "<h2>Searching for - $term</h2>";}
+    else {echo "<h3>Searching for - $term</h3>";}
     
     $sql = "select ' ', 
             sum(`SpendFinancial2013_14`)/1000000 as 'FY13_14',
@@ -103,7 +103,7 @@
 
   if  ($analyse == "pipeline_type") {echo "<h2>Summary by Pipeline Type - £m</h2>";}
   elseif  ($analyse == "organisation") {echo "<h2>Summary by Organisation - £m</h2>";}
-  elseif  ($analyse == "cpv_code") {echo "<h2>Summary by CPV Division - £m</h2>";}
+  elseif  ($analyse == "cpv_code") {echo "<h2>Summary by CPV code (division level) - £m</h2>";}
     
 
 ?> 

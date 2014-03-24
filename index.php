@@ -34,7 +34,7 @@
       </p>
       <center>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
-      <p> <a href="news.php" class=tv_button>20 Dec <br>G-Cloud news</a></p>
+      <p> <a href="news.php" class=tv_button>Mar 2014 <br>G-Cloud news</a></p>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
 <!--      <p> <a href="index.php" class=tv_button>Not yet working</a></p> -->
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
@@ -51,14 +51,19 @@
         $sql = "SELECT `For_Month` , sum(`Total_Charge`)/10000  FROM `g-cloud` group by `For_Month` desc";
         $result=mysqli_query($cxn,$sql);
         $spend = mysqli_fetch_row($result);
-        echo "<p style = \"color:#3366ff; font-size:10pt\">  - Nov 2013 : ".str_repeat("&nbsp",14)."£".number_format(intval($spend[1])/100)."m</p>";
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - Feb 2014 : ".str_repeat("&nbsp",14)."£".number_format(intval($spend[1])/100)."m</p>";
 
         $sql = "SELECT sum(`Total_Charge`)/1000000  FROM `g-cloud` WHERE 1";
         $result=mysqli_query($cxn,$sql);
         $spend = mysqli_fetch_row($result);
         echo "<p style = \"color:#3366ff; font-size:10pt\">  - To date: ".str_repeat("&nbsp",18)."£".number_format(intval($spend[0]))."m</p>";
+
+        $sql = "SELECT `message` FROM `sys_messages` WHERE (`key_id` = 'g-cloud import')";
+        $result=mysqli_query($cxn,$sql);
+        $import_date = mysqli_fetch_row($result);
+        echo "<p style = \"color:#3366ff; font-size:10pt\">Data as at $import_date[0] </p>";
+
       ?>
-        <p style = "color:#3366ff; font-size:10pt">Data as at 20th Dec 2013 </p>
 
       <p style = "color:#3366ff; font-size:10pt"><br><b>Spend Pipeline</b> </p>
 
@@ -108,8 +113,13 @@
 //        echo "<p style = \"color:#3366ff; font-size:10pt\">Total Capex:  £".number_format(intval($spend[0]))."m</p>";
 
         echo "<p style = \"color:#3366ff; font-size:10pt\">Total Pipeline: ".str_repeat("&nbsp",3)." £".number_format(intval($total_spend))."m</p>";
+
+        $sql = "SELECT `message` FROM `sys_messages` WHERE (`key_id` = 'pipeline import')";
+        $result=mysqli_query($cxn,$sql);
+        $import_date = mysqli_fetch_row($result);
+        echo "<p style = \"color:#3366ff; font-size:10pt\">Data as at $import_date[0] </p>";
+
 ?>
-        <p style = "color:#3366ff; font-size:10pt">Data as at 8th Jan 2014 </p>
 <!--        <p style = "color:#3366ff; font-size:10pt"><br><b>Construction pipeline</b> </p> 
 -->
       <?php
@@ -160,24 +170,32 @@
       
       <p style="size:10pt; background-color:#3366FF; color:#ffffff; border-radius:1em; text-align:center; padding:2px;">Updates</p>
       <p style = "color:#3366ff; font-size:10pt"><br><b>Recent updates</b> </p>
+      
+      <p style = "color:#3366ff; font-size:10pt"><br>Mar 21, 2014 - G-Cloud Jan / Feb spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Feb 07, 2014 - G-Cloud December spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Jan 31, 2014 - GDS publish G-Cloud spend graphs on performance platform.
+      <a href="https://www.gov.uk/performance/g-cloud" alt = "G-Cloud Sales Information on Cabinet Office web site" target="_blank">click here to see</a>
+      </p>
       <p style = "color:#3366ff; font-size:10pt"><br>Jan 13, 2014 - Spend pipeline beta released.</p>
       <p style = "color:#3366ff; font-size:10pt"><br>Jan 8, 2014 - Spend pipeline data updated.</p>
       <p style = "color:#3366ff; font-size:10pt"><br>Dec 20, 2013 - G-Cloud November spend added.</p>
-      <p style = "color:#3366ff; font-size:10pt"><br>Nov 27, 2013 - G-Cloud October spend added.</p>
-      <p style = "color:#3366ff; font-size:10pt"><br>Oct 18, 2013 - G-Cloud September spend added.</p>
+<?php
+ //     <p style = "color:#3366ff; font-size:10pt"><br>Nov 27, 2013 - G-Cloud October spend added.</p>
+//      <p style = "color:#3366ff; font-size:10pt"><br>Oct 18, 2013 - G-Cloud September spend added.</p>
+?>
       <p style = "color:#3366ff; font-size:10pt"><br>Follow us on twitter to get news directly - @GovSpendOrgUK.</p>
 
       <p>&nbsp</p>
 
       <p style="size:10pt; background-color:#3366FF; color:#ffffff; border-radius:1em; text-align:center; padding:2px;">Data Sources</p>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
-      <p style ="color:#3366ff; font-size:10pt"><a href="http://gcloud.civilservice.gov.uk/about/sales-information/" alt = "G-Cloud Sales Information">G-Cloud Spend data</a></p>
+      <p style ="color:#3366ff; font-size:10pt"><a href="http://gcloud.civilservice.gov.uk/about/sales-information/" alt = "G-Cloud Sales Information" target="_blank">G-Cloud Spend data</a></p>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
-      <p style ="color:#3366ff; font-size:10pt"><a href="https://online.contractsfinder.businesslink.gov.uk/data-feed.aspx" alt = "Contracts Finder data page">Spend Pipeline data<br>(you may need to click twice)</a></p>
+      <p style ="color:#3366ff; font-size:10pt"><a href="https://online.contractsfinder.businesslink.gov.uk/data-feed.aspx" alt = "Contracts Finder data page" target="_blank">Spend Pipeline data<br>(you may need to click twice)</a></p>
       <p style ="color:#3366ff; font-size:10pt">&nbsp</p>
-      <p style ="color:#3366ff; font-size:10pt"><a href="http://data.gov.uk/dataset/government-construction-pipeline" alt = "Construction pipeline on data.gov">Construction Pipeline data</a></p>
+      <p style ="color:#3366ff; font-size:10pt"><a href="http://data.gov.uk/dataset/government-construction-pipeline" alt = "Construction pipeline on data.gov" target="_blank">Construction Pipeline data</a></p>
       <p style ="color:#3366ff; font-size:10pt">&nbsp</p>
-      <p style ="color:#3366ff; font-size:10pt"><a href="http://simap.europa.eu/codes-and-nomenclatures/codes-cpv/codes-cpv_en.htm" alt = "link to cpv codes master list on simap.europa.eu">CPV Codes master list</a></p>
+      <p style ="color:#3366ff; font-size:10pt"><a href="http://simap.europa.eu/codes-and-nomenclatures/codes-cpv/codes-cpv_en.htm" alt = "link to cpv codes master list on simap.europa.eu" target="_blank">CPV Codes master list</a></p>
       <p style ="color:#3366ff; font-size:10pt">&nbsp</p>
 
     </div>
@@ -187,25 +205,23 @@
     <article id="articlecontent" >
 
       <h2>Helping you win business from the Public Sector</h2>
-      <h3>Congrats</h3>
-      <p>Congratulations to the G-Cloud team in Cabinet Office on the growth in use of the G-cloud framework.</p>
-      <p>Nov 2013 is the first month where spend is over £10m.  To put that in context; more is now being spent per month, than was spent in all of 2012 (via G-Cloud).</p>
-      <p>Our estimate for 2013 spend is £80m.  At current growth rates, 2014 should easily exceed £150m. Great job, well done.</p>
+
       <h3>What do we do?</h3>
       <p>GovSpend.Org.UK analyses published Government data that allows you to understand:</p>
-      <p><ul>
-      <li><b>G-Cloud Spend</b> - What Government has spent, with whom and for how much - allowing you to understand the G-Cloud market for your products and services.
-             For example, if you supply 'Agile' services, the following links will show you <ul>
+      
+      <p><b>G-Cloud Spend</b> - What Government has spent, with whom and for how much - allowing you to understand the G-Cloud market for your products and services.
+             For example, if you supply 'Agile' services, the following links will show you </p>
+             <ul>
              <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Customer&rank=total&scope=all&term=Agile" alt = "G-Cloud Agile Sales - showing customers">Who's buying 'Agile'</a></li>
              <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Product&rank=total&scope=all&term=Agile" alt = "G-Cloud Agile Sales - showing products">What's being bought</a></li>
-             <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Supplier&rank=total&scope=all&term=Agile" alt = "G-Cloud Agile Sales - showing suppliers">Who's supplying 'Agile'</a></li></ul> 
-             You can do your own searches for other products and services by selecting 'G-CLOUD SPEND' from the menu above.</li>
-      <li><b>Spend Pipeline</b> - What Government is planning to spend over the next six years - data includes contact details of the lead procurer and links back to the original notices posted on Government's Contracts Finder service.</li>
+             <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Supplier&rank=total&scope=all&term=Agile" alt = "G-Cloud Agile Sales - showing suppliers">Who's supplying 'Agile'</a></li>
+             </ul> 
+             <p>You can do your own searches for other products and services by selecting 'G-CLOUD SPEND' from the menu above.</p>
+      <p><b>Spend Pipeline</b> - What Government is planning to spend over the next few years - data includes contact details of the lead procurer and links back to the original notices posted on Government's Contracts Finder service.</p>
 <!--      <li><b>Construction Pipeline</b> - Government planned spend on construction.</li>
       <li><b>Other tools</b> are under development.</li>
 -->
-      </p></ul>
-      <p>This site is currently under development.  The data is correct and the site works but may be taken down at any time without notice.  The site will be launched at the end of November 2013.</p>   
+    
       <h3>Thank you</h3>
       <p>Thank you for having a look at GovSpend.Org.UK.  We welcome your suggestions on how we may improve the service.  Choose Contact Us from the menu above
       to get in touch.</p>   

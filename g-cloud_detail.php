@@ -31,18 +31,23 @@
     $customer = $_GET["Customer"];
     $product = $_GET["Product"];
     $supplier = $_GET["Supplier"];
-    if ($type == "All Purchases")
-      {$sql = "SELECT `Customer`,`Framework`,`Lot`,`For_Month`,`Product_Service_Description`,`Total_Charge`
-          FROM `g-cloud` order by `Customer` , `For_Month` desc";} 
-    elseif ($type == "Customer")
-      { $sql = "SELECT `Supplier`,`Framework`,`Lot`,`For_Month`,`Product_Service_Description`,`Total_Charge`
-          FROM `g-cloud` WHERE `Customer` = \"$customer\" order by `Supplier`, `For_Month` desc ";} 
-    elseif ($type == "Product")
-      { $sql = "SELECT `Customer`,`Framework`,`Lot`,`For_Month`,`Product_Service_Description`,`Total_Charge`
-          FROM `g-cloud` WHERE `Product_Service_Description` = \"$product\" order by `Customer`, `For_Month` desc ";} 
-    else
-      { $sql = "SELECT `Customer`,`Framework`,`Lot`,`For_Month`,`Product_Service_Description`,`Total_Charge`
-          FROM `g-cloud` WHERE `Supplier` = \"$supplier\" order by `Customer`, `For_Month` desc ";}
+    
+// This code no longer needed but kept just in case.....
+//    if ($type == "All Purchases")
+//      {$sql = "SELECT `Customer`,`Framework`,`Lot`,`For_Month`,`Product_Service_Description`,`Total_Charge` ,`supplier`
+//          FROM `g-cloud` order by `Customer` , `For_Month` desc";} 
+//    elseif ($type == "Customer")
+//      { $sql = "SELECT `Supplier`,`Framework`,`Lot`,`For_Month`,`Product_Service_Description`,`Total_Charge` ,`Customer`
+//          FROM `g-cloud` WHERE `Customer` = \"$customer\" order by `Supplier`, `For_Month` desc ";} 
+//    elseif ($type == "Product")
+//      { $sql = "SELECT `Customer`,`Framework`,`Lot`,`For_Month`,`Product_Service_Description`,`Total_Charge` ,`supplier`
+//          FROM `g-cloud` WHERE `Product_Service_Description` = \"$product\" order by `Customer`, `For_Month` desc ";} 
+//    else
+//      { $sql = "SELECT `Customer`,`Framework`,`Lot`,`For_Month`,`Product_Service_Description`,`Total_Charge`,`supplier`
+//          FROM `g-cloud` WHERE `Supplier` = \"$supplier\" order by `Customer`, `For_Month` desc ";}
+
+        $sql = "SELECT `Customer`,`Supplier`, `For_Month`,`Product_Service_Description`,`Total_Charge`,`Framework`,`Lot`
+          FROM `g-cloud` order by `Customer`, `For_Month` desc ";
 
 
 ?> 
@@ -59,11 +64,11 @@ elseif ($type == "Supplier")
 
 // Set up the back to links
 if ($type == "Customer") 
-  {echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php?type=Customer&rank=$rank&scope=$scope&term=".urlencode($term)."\" style = \"color:#3366ff; font-size:10pt\"><-- Back to list of customers</a></p>";}
+  {echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php\" style = \"color:#3366ff; font-size:10pt\"><-- Back </a></p>";}
 elseif ($type == "Product") 
-  {echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php?type=Product&rank=$rank&scope=$scope&term=".urlencode($term)."\" style = \"color:#3366ff; font-size:10pt\"><-- Back to list of products</a></p>";}
-elseif ($type == "Supplier") 
-  {echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php?type=Supplier&rank=$rank&scope=$scope&term=".urlencode($term)."\" style = \"color:#3366ff; font-size:10pt\"><-- Back to list of suppliers</a></p>";}
+  {echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php\" style = \"color:#3366ff; font-size:10pt\"><-- Back </a></p>";}
+else
+  {echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php\" style = \"color:#3366ff; font-size:10pt\"><-- Back </a></p>";}
 ?>
 
  
@@ -71,13 +76,14 @@ elseif ($type == "Supplier")
 <div class="datagrid"><table>
   <thead>
     <tr>
-      <th></th>
-<?php if (strlen($org)>0) {echo "<th>Supplier</th>";} else {echo "<th>Customer</th>";}?>
-      <th>Framework</th>
-      <th>Lot</th>
+      <th>ID</th>
+      <th>Customer</th>
+	  <th>Supplier</th> 
       <th>Month</th>
       <th>Description</th>
       <th align = "right">Charge</th>
+      <th>Framework</th>
+      <th>Lot</th>
       </tr>
     </thead>
   <tbody>
@@ -94,18 +100,21 @@ elseif ($type == "Supplier")
         { if ($colour == 0) {echo "<tr>";$colour = 1;} else {echo "<tr  class=\"alt\">";$colour = 0;} 
           $rank=$rank+1;
           echo "<td><b>".$rank."</b></td>";
-          if ($type == "Supplier")
-            {echo "<td><a href=\"$server/g-cloud_detail.php?type=Customer&Customer=".urlencode($spend[0])."\">".$spend[0]."</a></td>";}          
-          elseif ($type == "Customer")   
-            {echo "<td><a href=\"$server/g-cloud_detail.php?type=Supplier&Supplier=".urlencode($spend[0])."\">".$spend[0]."</a></td>";}
-          else
-            {echo "<td><a href=\"$server/g-cloud_detail.php?type=Customer&Customer=".urlencode($spend[0])."\">".$spend[0]."</a></td>";}          
+// No longer needed but kept just in case
+//          if ($type == "Supplier")
+//           {echo "<td><a href=\"$server/g-cloud_detail.php?type=Customer&Customer=".urlencode($spend[0])."\">".$spend[0]."</a></td>";}          
+//          elseif ($type == "Customer")   
+//            {echo "<td><a href=\"$server/g-cloud_detail.php?type=Supplier&Supplier=".urlencode($spend[0])."\">".$spend[0]."</a></td>";}
+//          else
+//            {echo "<td><a href=\"$server/g-cloud_detail.php?type=Customer&Customer=".urlencode($spend[0])."\">".$spend[0]."</a></td>";}          
+          echo "<td>".$spend[0]."</td>";
           echo "<td>".$spend[1]."</td>";
           echo "<td>".$spend[2]."</td>";
           echo "<td>".$spend[3]."</td>";
-          echo "<td>".$spend[4]."</td>";
-          echo "<td align = \"right\">£".number_format($spend[5])."</td>";
-          $grand_total[5]+=$spend[5];
+          echo "<td align = \"right\">£".number_format($spend[4])."</td>";
+          $grand_total[5]+=$spend[4];
+          echo "<td>".$spend[5]."</td>";
+          echo "<td>".$spend[6]."</td>";
           echo "</tr>";
           
         } // end if (str_len($spend[0])>0)
@@ -117,6 +126,7 @@ elseif ($type == "Supplier")
           echo "<td></td>";
           echo "<td></td>";
           echo "<td align = \"right\"><b> £".number_format($grand_total[5])."</b></td>";
+          echo "<td></td>";
           echo "</tr>";
    
 ?>
@@ -124,11 +134,11 @@ elseif ($type == "Supplier")
 </table></div>
 <?php 
 if ($type == "Customer") 
-  {echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php?type=Customer&rank=$rank&scope=$scope&term=".urlencode($term)."\" style = \"color:#3366ff; font-size:10pt\"><-- Back to list of customers</a></p>";}
+  {echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php\" style = \"color:#3366ff; font-size:10pt\"><-- Back </a></p>";}
 elseif ($type == "Product") 
-  {echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php?type=Product&rank=$rank&scope=$scope&term=".urlencode($term)."\" style = \"color:#3366ff; font-size:10pt\"><-- Back to list of products</a></p>";}
-elseif ($type == "Supplier") 
-  {echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php?type=Supplier&rank=$rank&scope=$scope&term=".urlencode($term)."\" style = \"color:#3366ff; font-size:10pt\"><-- Back to list of suppliers</a></p>";}
+  {echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php\" style = \"color:#3366ff; font-size:10pt\"><-- Back </a></p>";}
+else
+  {echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php\" style = \"color:#3366ff; font-size:10pt\"><-- Back </a></p>";}
 ?>
 
 <h2>Notes</h2>

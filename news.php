@@ -20,32 +20,37 @@
     include('init.php');
 ?> 
 
-<h1>News</h1>
+<h1>G-Cloud News</h1>
 
-<h2>20th December, 2013 - G-Cloud Spend to end of November 2013</h2>
-<p>Spend for November 2013 has now been included.</p><p>Highlights are:</p> 
+<h2>20th March 2014 - G-Cloud Spend to end of February 2014</h2>
+<p>Spend for Jan and Feb 2014 has now been included.</p><p>Highlights are:</p> 
 <ul>
-<li>Spend in November was £10.5m.</li>
-<li>Spend in October was revised upwards from £7.0m to £9.8m.</li>
-<li>There is a trend of upward revision of previous months data - expect Nov to be revised upwards in Jan.</li>
-<li>Total spend is £77.8m with £70.7m being in 2013 (£7.1m in 2012).</li>
+<li>Impressive growth - G-Cloud spend per month (£16m in Jan 2014) is now more than twice that of the entire year in 2012 (£7m)</li>
+<li>Spend in February was £13.4m.  Expect this to be revised upwards when the March 2014 data is released (our guess to about £16m).</li>
+<li>Total spend is £124m with almost £30m in 2014  (£87m being in 2013, £7.1m in 2012).</li>
 </ul>
 <p>Spread of the framework</p>
 <ul>
-<li>21 new customers joined the framework this month (bringing the total to 336).</li> 
-<li>13 new suppliers joined the framework this month (bringing the total to 212).</li> 
+<li>22 new customers joined the framework this month (bringing the total to 380).</li> 
+<li>24 new suppliers joined the framework this month (bringing the total to 273).</li> 
 </ul>
 <p>Forecasts</p>
 <ul>
-<li>We forecast the first £10m month this year, delighted to report that November was the first £10m+ month.</li>
-<li>We have increased the forecast spend for 2013 from £75m to £80m</li>
-<li>We have increased the forecast spend for 2014 to £150m.  Based on growth rates in both spend and the number
- of organisations using the framework, £200m+ would not be a surprise in 2014 and £250m suddenly seems possible.</li>
+<li>Spend is building strongly.  The framework is adding 20 to 30 new buying organisations each month.</li>
+<li>It is likely that that spend will top £20m a month by summer and be around £30m a month by year end.</li>
+<li>Because of the strong start to 2014, we have increased our forecast for 2014 to £200m.  </li>
 </ul>
 <h3>You are welcome to use and copy any information on this site (including the presentations) as long as you attribute to GovSpend.Org.UK </h3>
-<p><iframe src="http://www.slideshare.net/slideshow/embed_code/29409800" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe></p>
+<p>
+
+<iframe src="http://www.slideshare.net/slideshow/embed_code/32616902" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+
+</p>
+
 
 <h3>Previous news releases and presentations can be found at</h3>
+<p> <a href="news-2014-01.php">G-Cloud News - Jan 2014</a></p>
+<p> <a href="news-2013-12.php">G-Cloud News - December 2013</a></p>
 <p> <a href="news-2013-11.php">G-Cloud News - November 2013</a></p>
 <p> <a href="news-2013-10.php">G-Cloud News - October 2013</a></p>
 

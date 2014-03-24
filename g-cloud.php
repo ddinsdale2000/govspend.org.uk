@@ -31,6 +31,10 @@
    $rank = $_GET['rank']; // Specifies the sort order of the customer and supplier lists
    if (strlen($rank) == 0) {$rank = "total";}
    $term = $_GET['term']; // Specifies the product string to search for
+   $search_supplier = $_GET['search_supplier']; // Specifies the supplier string to search for
+   if (strlen($search_supplier)==0) {$search_supplier = "all";}
+   $search_client = $_GET['search_client']; // Specifies the client string to search for
+   if (strlen($search_client)==0) {$search_client = "all";}
    if (strlen($type)==0) 
      {if (strlen($term)>0) 
         {$type = "Product";$rank=total;} // Page was called with a search term
@@ -62,7 +66,7 @@
    elseif ($scope == "all")  {
        if ($type == "Summary")
             {echo "<h1>G-Cloud Spend Analysis - Summary</h1>";}
-       else {echo "<h1>G-Cloud Spend Analysis - All ".$type."s</h1>";}
+       else {echo "<h1>G-Cloud Spend Analysis - All sectors</h1>";}
        $scope_sql = "";}
    elseif ($scope == "central") {
        echo "<h1>G-Cloud Spend Analysis - Central Government</h1>"; 
@@ -82,6 +86,20 @@
                             (`Customer` like '%Animal%'))
                             ";}
   if ($term <> "all") {echo "<h2>Analysing purchases where product contains: ".$term."</h2>";}
+//  if ($type == "Summary") 
+//     { 
+       echo "<p><form name=\"input\" action=\"g-cloud.php\" method=\"get\">";
+       echo "<p style = \"color:#3366ff; font-size:10pt\">Search : ";
+       echo "Product <input type=\"text\" name=\"term\" value=\"$term\">";
+       echo "Supplier <input type=\"text\" name=\"search_supplier\" value=\"$search_supplier\">";
+       echo "Client <input type=\"text\" name=\"search_client\" value=\"$search_client\">";
+       echo "<input type=\"submit\" value=\"Search\">";
+       echo "</form></p>";
+       echo "<p style = \"color:#3366ff; font-size:10pt\">For example, to search for all sales of 'Agile' just type the word Agile into the Product box and press the search button.</p>";
+       echo "<p style = \"color:#3366ff; font-size:10pt\"><b>IMPORTANT NOTE</b> - 20th March 2014 - Cabinet Office has removed details of the products sold from the latest release of data.  
+       		We have written to Cabinet Office and asked them add this data back back in. Seeing what has been bought is the most useful piece of information in the data set.</p>";
+//       }
+       echo "</p>";
   
 // -------------------------------------------------------------------------------------------------------------------------------    
 // OUTPUT THE SUMMARY TABLE OF SPEND BY MONTH
@@ -103,22 +121,25 @@ if (1) // (($type == "Summary") or ($scope != "all"))
             SUM(IF(month(`For_Month`)='11',`Total_Charge`,0)) AS `Nov`, 
             SUM(IF(month(`For_Month`)='12',`Total_Charge`,0)) AS `Dec`, 
             sum(`Total_Charge`) as `Total_Charge`
-            FROM `g-cloud`"; 
+            FROM `g-cloud` WHERE 1 "; 
 
-// Add in the where clause for both / either a product query or a scope query            
-    if (($scope <> "all") and ($term <> "all")) 
-      {$sql = $sql . " WHERE ((". $scope_sql .") and (`Product_Service_Description` LIKE '%".$term."%'))"  ;}   
-    elseif (($scope <> "all") and ($term == "all")) 
-      {$sql = $sql . " WHERE (". $scope_sql .")";}   
-    elseif (($scope == "all") and ($term <> "all" )) 
-      {$sql = $sql . " WHERE (`Product_Service_Description` LIKE '%". $term ."%')";}   
+// Add in the where clause for both / either a product query or a scope query 
+           
+    if ($scope <> "all") 
+    	{ $sql = $sql . " and (". $scope_sql .")"; }   
+   	if ($term <> "all" ) 
+      	{ $sql = $sql . " and (`Product_Service_Description` LIKE '%". $term ."%')";}   
+   	if ($search_supplier <> "all" ) 
+      	{ $sql = $sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";}   
+   	if ($search_client <> "all" ) 
+      { $sql = $sql . "and (`Customer` LIKE '%". $search_client ."%')";}   
             
 	$sql=$sql . " GROUP BY fw_year desc";
 
 // Execute the SQL Statement            
    $result=mysqli_query($cxn,$sql);
 // Output titles
-   echo "<h2>Summary by Date - £k</h2>";
+   echo "<h2>G-Cloud monthly spend - £k</h2>";
 // Output the table div tag and header row
    echo "<div class=\"datagrid\"><table>";
    echo "<thead>";
@@ -132,6 +153,10 @@ if (1) // (($type == "Summary") or ($scope != "all"))
    echo "</thead>";
    echo "<tbody>";
 // Process the query set results - not worrying about no results as there should always be some!   
+	$spend_2012 = array(0,0,0,0,0,0,0,0,0,0,0,0.0);
+	$spend_2013 = array(0,0,0,0,0,0,0,0,0,0,0,0.0);
+	$spend_2014 = array(0,0,0,0,0,0,0,0,0,0,0,0,0);
+
    while ($spend = mysqli_fetch_row($result))
       {echo "<tr>";
         echo "<td align = \"right\">".$spend[0]."</td>";
@@ -149,7 +174,53 @@ if (1) // (($type == "Summary") or ($scope != "all"))
         echo "<td align = \"right\">".number_format(intval($spend[12]/1000))."</td>";
         echo "<td align = \"right\">£".number_format(intval($spend[13]/1000))."</td>";
         $total += $spend[13];
-      echo "</tr>";
+        echo "</tr>";
+
+		if ($spend[0] == 2012)
+    	  { 
+    	  	$spend_2012[1] =  intval($spend[1]/1000);
+    	  	$spend_2012[2] =  intval($spend[2]/1000);
+    	  	$spend_2012[3] =  intval($spend[3]/1000);
+    	  	$spend_2012[4] =  intval($spend[4]/1000);
+    	  	$spend_2012[5] =  intval($spend[5]/1000);
+    	  	$spend_2012[6] =  intval($spend[6]/1000);
+    	  	$spend_2012[7] =  intval($spend[7]/1000);
+    	  	$spend_2012[8] =  intval($spend[8]/1000);
+    	  	$spend_2012[9] =  intval($spend[9]/1000);
+    	  	$spend_2012[10] = intval($spend[10]/1000);
+    	  	$spend_2012[11] = intval($spend[11]/1000);
+    	  	$spend_2012[12] = intval($spend[12]/1000);
+    	  }
+		if ($spend[0] == 2013)
+    	  { 
+    	  	$spend_2013[1] =  intval($spend[1]/1000);
+    	  	$spend_2013[2] =  intval($spend[2]/1000);
+    	  	$spend_2013[3] =  intval($spend[3]/1000);
+    	  	$spend_2013[4] =  intval($spend[4]/1000);
+    	  	$spend_2013[5] =  intval($spend[5]/1000);
+    	  	$spend_2013[6] =  intval($spend[6]/1000);
+    	  	$spend_2013[7] =  intval($spend[7]/1000);
+    	  	$spend_2013[8] =  intval($spend[8]/1000);
+    	  	$spend_2013[9] =  intval($spend[9]/1000);
+    	  	$spend_2013[10] = intval($spend[10]/1000);
+    	  	$spend_2013[11] = intval($spend[11]/1000);
+    	  	$spend_2013[12] = intval($spend[12]/1000);
+    	  }
+		if ($spend[0] == 2014)
+    	  { 
+    	  	$spend_2014[1] =  intval($spend[1]/1000);
+    	  	$spend_2014[2] =  intval($spend[2]/1000);
+    	  	$spend_2014[3] =  intval($spend[3]/1000);
+    	  	$spend_2014[4] =  intval($spend[4]/1000);
+    	  	$spend_2014[5] =  intval($spend[5]/1000);
+    	  	$spend_2014[6] =  intval($spend[6]/1000);
+    	  	$spend_2014[7] =  intval($spend[7]/1000);
+    	  	$spend_2014[8] =  intval($spend[8]/1000);
+    	  	$spend_2014[9] =  intval($spend[9]/1000);
+    	  	$spend_2014[10] = intval($spend[10]/1000);
+    	  	$spend_2014[11] = intval($spend[11]/1000);
+    	  	$spend_2014[12] = intval($spend[12]/1000);
+    	  }
       }
 // Output total for last column only
       echo "<tr>"; 
@@ -163,7 +234,62 @@ if (1) // (($type == "Summary") or ($scope != "all"))
 } 
 // END OF SUMMARY TABLE BY MONTH
 // -------------------------------------------------------------------------------------------------------------------------------    
+
+
+
+    echo "<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\"></script>";
+    echo "<script type=\"text/javascript\">";
+    echo "google.load(\"visualization\", \"1\", {packages:[\"corechart\"]});";
+    echo "google.setOnLoadCallback(drawChart);";
+    echo "function drawChart() {";
+    echo "var data = google.visualization.arrayToDataTable([";
+    echo "['Month', '2012', '2013', '2014'],";
+    echo "['Jan',  $spend_2012[1],   $spend_2013[1], $spend_2014[1]],";
+    echo "['Feb',  $spend_2012[2],   $spend_2013[2], $spend_2014[2]],";
+    echo "['Mar',  $spend_2012[3],   $spend_2013[3], $spend_2014[3]],";
+    echo "['Apr',  $spend_2012[4],   $spend_2013[4], $spend_2014[4]],";
+    echo "['May',  $spend_2012[5],   $spend_2013[5], $spend_2014[5]],";
+    echo "['Jun',  $spend_2012[6],   $spend_2013[6], $spend_2014[6]],";
+    echo "['Jul',  $spend_2012[7],   $spend_2013[7], $spend_2014[7]],";
+    echo "['Aug',  $spend_2012[8],   $spend_2013[8], $spend_2014[8]],";
+    echo "['Sep',  $spend_2012[9],   $spend_2013[9], $spend_2014[9]],";
+    echo "['Oct',  $spend_2012[10],   $spend_2013[10], $spend_2014[10]],";
+    echo "['Nov',  $spend_2012[11],   $spend_2013[11], $spend_2014[11]],";
+    echo "['Dec',  $spend_2012[12],   $spend_2013[12], $spend_2014[12]]";
+	echo " ]);";
+	echo "var options = {title: 'G-Cloud monthly spend - £k'};";
+	echo "var chart = new google.visualization.LineChart(document.getElementById('chart_div'));";
+	echo "chart.draw(data, options);";
+	echo "}</script>";
+  	echo "<p>  <div id=\"chart_div\" style=\"width: 800px; height: 200px;\"></div></p>";
+
+   echo "<p style = \"color:#3366ff; font-size:10pt\">Show sector :  ";
+   if ($type == "Supplier")
+   {echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=local&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Local Gov</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=health&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Health</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=emergency&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Fire & Police</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=central&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Central</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=alpha&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>All (no filter)</a>&nbsp&nbsp</p>";}
+   else
+   {echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=local&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Local Gov</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=health&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Health</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=emergency&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Fire & Police</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=central&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Central</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=alpha&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>All (no filter)</a>&nbsp&nbsp</p>";}
+
+     if ($scope == "local") 
+       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers with names containing Council or Borough; excludes British Council.</p>";}
+     elseif ($scope == "health") 
+       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers with names containing NHS, PCT, CMU, DH, Hospital or Health.  Includes Care Quality Commission.</p>";}
+     elseif ($scope == "emergency") 
+       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers with names containing Fire, and Police.</p>";}
+     elseif ($scope == "central") 
+       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers who do not appear in the Local, Health, Fire and Police listings.</p>";}
+     else  
+       {echo "<p style = \"color:#3366ff; font-size:10pt\">Showing all records (no filter).</p>";}
+
 ?>
+
 
 <?php     
 // -------------------------------------------------------------------------------------------------------------------------------    
@@ -180,14 +306,16 @@ if (1) // (($type == "Summary") or ($scope != "all"))
             SUM(IF(Lot='3',`Total_Charge`,0)) AS Lot3,
             SUM(IF(Lot='4',`Total_Charge`,0)) AS Lot4,
             sum(`Total_Charge`) as `Total_Charge`
-            FROM `g-cloud`"; 
-// Add in the where clause for both / either a product query or a scope query            
-    if (($scope <> "all") and ($term <> "all")) 
-      {$sql = $sql . " WHERE ((". $scope_sql .") and (`Product_Service_Description` LIKE '%".$term."%'))"  ;}   
-    elseif (($scope <> "all") and ($term == "all")) 
-      {$sql = $sql . " WHERE (". $scope_sql .")";}   
-    elseif (($scope == "all") and ($term <> "all" )) 
-      {$sql = $sql . " WHERE (`Product_Service_Description` LIKE '%". $term ."%')";}   
+            FROM `g-cloud` where 1 "; 
+// Add in the where clause for both / either a product query or a scope query    
+    if ($scope <> "all") 
+    	{ $sql = $sql . " and (". $scope_sql .")"; }   
+   	if ($term <> "all" ) 
+      	{ $sql = $sql . " and (`Product_Service_Description` LIKE '%". $term ."%')";}   
+   	if ($search_supplier <> "all" ) 
+      	{ $sql = $sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";}   
+   	if ($search_client <> "all" ) 
+      { $sql = $sql . "and (`Customer` LIKE '%". $search_client ."%')";}   
 
 	$sql=$sql . " GROUP BY Framework";
 // Execute the SQL Statement            
@@ -234,25 +362,15 @@ if (1) // (($type == "Summary") or ($scope != "all"))
 
 // -------------------------------------------------------------------------------------------------------------------------------    
 // OUTPUT THE NAV BUTTONS
-// -------------------------------------------------------------------------------------------------------------------------------    
+// -------------------------------------------------------------------------------------------------------------------------------  term=all&search_supplier=all&search_client=cabinet  
 
    echo "<p style = \"color:#3366ff; font-size:10pt\">Switch &nbsp&nbsp: ";
    if (($type == "Summary") or ($type == "Supplier") or ($type == "Product"))
-     {echo "<a href=\"$server/g-cloud.php?type=Customer&rank=$rank&scope=$scope&term=".urlencode($term)."\" class=tv_button>Show customers</a>&nbsp&nbsp";}
+     {echo "<a href=\"$server/g-cloud.php?type=Customer&rank=$rank&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Show customers</a>&nbsp&nbsp";}
    if (($type == "Summary") or ($type == "Customer") or ($type == "Product"))
-     {echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=$rank&scope=$scope&term=".urlencode($term)."\" class=tv_button>Show suppliers</a>&nbsp&nbsp";}
+     {echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=$rank&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Show suppliers</a>&nbsp&nbsp";}
     if (($type == "Summary") or ($type == "Customer") or ($type == "Supplier"))
-     {echo "<a href=\"$server/g-cloud.php?type=Product&rank=$rank&scope=$scope&term=".urlencode($term)."\" class=tv_button>Show Products</a>&nbsp&nbsp</p>";}
-  if ($type == "Summary") 
-     {
-       echo "<p><form name=\"input\" action=\"g-cloud.php\" method=\"get\">";
-       echo "<p style = \"color:#3366ff; font-size:10pt\">Product name: <input type=\"text\" name=\"term\">";
-       echo "<input type=\"submit\" value=\"Search\">";
-       echo "</form></p>";
-       echo "<p style = \"color:#3366ff; font-size:10pt\">For example, to search for all sales of 'Agile' just type in the word Agile and press the search button.</p>";
-       echo "<p style = \"color:#3366ff; font-size:10pt\">Show all : ";
-       echo "<a href=\"$server/g-cloud_detail.php?type=All+Purchases\" class=tv_button>Show all source data (". number_format($num_recs[0])." records)</a>";}
-       echo "</p>";
+     {echo "<a href=\"$server/g-cloud.php?type=Product&rank=$rank&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Show Products</a>&nbsp&nbsp</p>";}
 }
 ?>
 
@@ -264,37 +382,14 @@ if  (($type == "Customer") or ($type == "Supplier") or ($type == "Product"))
    if (1) // ($scope == 'all')
    {
      echo "<p style = \"color:#3366ff; font-size:10pt\">Rank by :  ";
-     echo "<a href=\"$server/g-cloud.php?type=$type&rank=alpha&scope=$scope&term=".urlencode($term)."\" class=tv_button>$type Name</a>&nbsp&nbsp";
-     echo "<a href=\"$server/g-cloud.php?type=$type&rank=Lot+1&scope=$scope&term=".urlencode($term)."\" class=tv_button>IaaS</a>&nbsp&nbsp";
-     echo "<a href=\"$server/g-cloud.php?type=$type&rank=Lot+2&scope=$scope&term=".urlencode($term)."\" class=tv_button>PaaS</a>&nbsp&nbsp";
-     echo "<a href=\"$server/g-cloud.php?type=$type&rank=Lot+3&scope=$scope&term=".urlencode($term)."\" class=tv_button>SaaS</a>&nbsp&nbsp";
-     echo "<a href=\"$server/g-cloud.php?type=$type&rank=Lot+4&scope=$scope&term=".urlencode($term)."\" class=tv_button>SCS</a>&nbsp&nbsp";
-     echo "<a href=\"$server/g-cloud.php?type=$type&rank=total&scope=$scope&term=".urlencode($term)."\" class=tv_button>Total</a></p>";
+     echo "<a href=\"$server/g-cloud.php?type=$type&rank=alpha&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>$type Name</a>&nbsp&nbsp";
+     echo "<a href=\"$server/g-cloud.php?type=$type&rank=Lot+1&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>IaaS</a>&nbsp&nbsp";
+     echo "<a href=\"$server/g-cloud.php?type=$type&rank=Lot+2&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>PaaS</a>&nbsp&nbsp";
+     echo "<a href=\"$server/g-cloud.php?type=$type&rank=Lot+3&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>SaaS</a>&nbsp&nbsp";
+     echo "<a href=\"$server/g-cloud.php?type=$type&rank=Lot+4&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>SCS</a>&nbsp&nbsp";
+     echo "<a href=\"$server/g-cloud.php?type=$type&rank=total&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Total</a></p>";
    }  
-   echo "<p style = \"color:#3366ff; font-size:10pt\">Filter by :  ";
-   if ($type == "Supplier")
-   {echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=local&term=".urlencode($term)."\" class=tv_button>Local Gov</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=health&term=".urlencode($term)."\" class=tv_button>Health</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=emergency&term=".urlencode($term)."\" class=tv_button>Fire & Police</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=central&term=".urlencode($term)."\" class=tv_button>Central</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=alpha&term=".urlencode($term)."\" class=tv_button>All (no filter)</a>&nbsp&nbsp</p>";}
-   else
-   {echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=local&term=".urlencode($term)."\" class=tv_button>Local Gov</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=health&term=".urlencode($term)."\" class=tv_button>Health</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=emergency&term=".urlencode($term)."\" class=tv_button>Fire & Police</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=central&term=".urlencode($term)."\" class=tv_button>Central</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=alpha&term=".urlencode($term)."\" class=tv_button>All (no filter)</a>&nbsp&nbsp</p>";}
 
-     if ($scope == "local") 
-       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers with names containing Council or Borough; excludes British Council.</p>";}
-     elseif ($scope == "health") 
-       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers with names containing NHS, PCT, CMU, DH, Hospital or Health.  Includes Care Quality Commission.</p>";}
-     elseif ($scope == "emergency") 
-       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers with names containing Fire, and Police.</p>";}
-     elseif ($scope == "central") 
-       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers who do not appear in the Local, Health, Fire and Police listings.</p>";}
-     else  
-       {echo "<p style = \"color:#3366ff; font-size:10pt\">Showing all records (no filter).</p>";}
 
      if ($rank == "total")  {echo "<p style = \"color:#3366ff; font-size:10pt\">Rank by : Total </p>";}
      elseif ($rank == "alpha")  {echo "<p style = \"color:#3366ff; font-size:10pt\">Rank by : $type name </p>";}
@@ -325,7 +420,7 @@ if  (($type == "Customer") or ($type == "Supplier") or ($type == "Product"))
             SUM(IF(Lot='3',`Total_Charge`,0)) AS Lot3,
             SUM(IF(Lot='4',`Total_Charge`,0)) AS Lot4,
             sum(`Total_Charge`) as `Total_Charge`
-            FROM `g-cloud`";}
+            FROM `g-cloud` where 1 ";}
   elseif ($type == "Product")
   {
         $sql = "SELECT `Product_Service_Description`, 
@@ -334,7 +429,7 @@ if  (($type == "Customer") or ($type == "Supplier") or ($type == "Product"))
             SUM(IF(Lot='3',`Total_Charge`,0)) AS Lot3,
             SUM(IF(Lot='4',`Total_Charge`,0)) AS Lot4,
             sum(`Total_Charge`) as `Total_Charge`
-            FROM `g-cloud`";}
+            FROM `g-cloud` where 1 ";}
   else
   { $sql = "SELECT `Customer`, sum(`Total_Charge`) as 'Total_Charge' FROM `g-cloud` WHERE 1 group by `Customer`";
     $sql = "SELECT `Customer`, 
@@ -343,14 +438,19 @@ if  (($type == "Customer") or ($type == "Supplier") or ($type == "Product"))
             SUM(IF(Lot='3',`Total_Charge`,0)) AS Lot3,
             SUM(IF(Lot='4',`Total_Charge`,0)) AS Lot4,
             sum(`Total_Charge`) as `Total_Charge`
-            FROM `g-cloud`";}
-// Add in the where clause for both / either a product query or a scope query            
-    if (($scope <> "all") and ($term <> "all")) 
-      {$sql = $sql . " WHERE ((". $scope_sql .") and (`Product_Service_Description` LIKE '%".$term."%'))"  ;}   
-    elseif (($scope <> "all") and ($term == "all")) 
-      {$sql = $sql . " WHERE (". $scope_sql .")";}   
-    elseif (($scope == "all") and ($term <> "all" )) 
-      {$sql = $sql . " WHERE (`Product_Service_Description` LIKE '%". $term ."%')";}   
+            FROM `g-cloud` where 1 ";}
+// Add in the where clause for both / either a product query or a scope query   
+         
+    if ($scope <> "all") 
+    	{ $sql = $sql . " and (". $scope_sql .")"; }   
+   	if ($term <> "all" ) 
+      	{ $sql = $sql . " and (`Product_Service_Description` LIKE '%". $term ."%')";}   
+   	if ($search_supplier <> "all" ) 
+      	{ $sql = $sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";}   
+   	if ($search_client <> "all" ) 
+      { $sql = $sql . "and (`Customer` LIKE '%". $search_client ."%')";}   
+
+
 // Add in the group by clauses
   if ($type == "Supplier")
     {$sql = $sql . " GROUP BY `Supplier`";}
@@ -389,11 +489,18 @@ if  (($type == "Customer") or ($type == "Supplier") or ($type == "Product"))
           $i=$i+1;
           echo $i."</b></td>";
           if ($type == "Supplier")
-            { echo "<td><a href=\"$server/g-cloud_detail.php?type=Supplier&rank=$rank&scope=$scope&term=".urlencode($term)."&Supplier=".urlencode($spend[0])."\">".$spend[0]."</a></td>";}
+            { //echo "<td><a href=\"$server/g-cloud_detail.php?type=Supplier&rank=$rank&scope=$scope&term=".urlencode($term)."&Supplier=".urlencode($spend[0])."\">".$spend[0]."</a></td>";
+                echo "<td><a href=\"$server/g-cloud.php?type=$type&rank=alpha&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($spend[0])."&search_client=".urlencode($search_client)."\">$spend[0]</a></td>";
+
+            }
           elseif ($type == "Product")
-            { echo "<td><a href=\"$server/g-cloud_detail.php?type=Product&rank=$rank&scope=$scope&term=".urlencode($term)."&Product=".urlencode($spend[0])."\">".$spend[0]."</a></td>";}
+            { //echo "<td><a href=\"$server/g-cloud_detail.php?type=Product&rank=$rank&scope=$scope&term=".urlencode($term)."&Product=".urlencode($spend[0])."\">".$spend[0]."</a></td>";
+                echo "<td><a href=\"$server/g-cloud.php?type=$type&rank=alpha&scope=$scope&term=".urlencode($spend[0])."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\">$spend[0]</a></td>";
+            }
           else
-            { echo "<td><a href=\"$server/g-cloud_detail.php?type=Customer&rank=$rank&scope=$scope&term=".urlencode($term)."&Customer=".urlencode($spend[0])."\">".$spend[0]."</a></td>";}
+            { //echo "<td><a href=\"$server/g-cloud_detail.php?type=Customer&rank=$rank&scope=$scope&term=".urlencode($term)."&Customer=".urlencode($spend[0])."\">".$spend[0]."</a></td>";
+                echo "<td><a href=\"$server/g-cloud.php?type=$type&rank=alpha&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($spend[0])."\">$spend[0]</a></td>";
+            }
           echo "<td align = \"right\"> £".number_format(intval($spend[1]))."</td>";
           $grand_total[1] += $spend[1];
 
@@ -429,6 +536,10 @@ if  (($type == "Customer") or ($type == "Supplier") or ($type == "Product"))
    echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php?type=Summary\"> <- Back to G-Cloud Spend home page</a></p>";
 
 }  
+
+       echo "<p style = \"color:#3366ff; font-size:10pt\">Show all : ";
+       echo "<a href=\"$server/g-cloud_detail.php?type=All+Purchases\" class=tv_button>Show all source data (". number_format($num_recs[0])." records)</a>";
+
 ?>
 
 <?php include ("footer.php"); ?>

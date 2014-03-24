@@ -127,7 +127,7 @@ of each CPV code.  Hence, rather than searching for opportunities with code 722,
 This system is not case sensitive (i.e. searching for programming will find Programming, PROGRAMMING, PROgramming etc.  
 Worth noting that an opportunity may be listed under several CPV codes.</p>
 
-<p> Full details on CPV codes can be found on the EU simap website at: <a href="http://simap.europa.eu/codes-and-nomenclatures/codes-cpv/codes-cpv_en.htm" alt = "link to cpv codes master list on simap.europa.eu" style= "display:inline">CPV Codes master list</a></p>
+<p> Full details on CPV codes can be found on the EU simap website at: <a href="http://simap.europa.eu/codes-and-nomenclatures/codes-cpv/codes-cpv_en.htm" alt = "link to cpv codes master list on simap.europa.eu" style= "display:inline" target="_blank">CPV Codes master list</a></p>
 
 
 

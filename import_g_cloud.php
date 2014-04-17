@@ -25,7 +25,7 @@ echo "<h1>Preparing file to import into GovSpend database</h1>";
 
 
 $filename = "./upload/G-Cloud-Total-Spend-22-11-13.csv"; // name of the file to import
-$default_filename = "./upload/G-Cloud-Total-Spend-28-01-14a.csv"; // name of the file to import
+$default_filename = "./upload/G-Cloud-Spend-10-04-14 Processed.csv"; // name of the file to import
 //$filename = "http://gcloud.civilservice.gov.uk/files/2012/06/G-Cloud-Total-Spend-13-12-13.csv";
 $filename = $_POST['filename'];
 $import_date = $_POST['import_date'];
@@ -89,8 +89,12 @@ if ($debug > 0) {   echo $buffer."<br>"; }  // Print field names
     	       {  
     	          $curr_field += 1; 
     	          if ($curr_field == 6) 
-    	          {  $out_string = $out_string . date_format(date_create("01-".$date_string),"Y-m-d");
+    	          {  
+    	          	 $out_string = $out_string . date_format(date_create("01-".$date_string),"Y-m-d");
     	             $sql_out = $sql_out .date_format(date_create("01-".$date_string),"Y-m-d");
+					echo "<p>$date_string</p>";
+//    	          	 $out_string = $out_string . date_format(date_create($date_string),"Y-m-d");
+//    	             $sql_out = $sql_out .date_format(date_create($date_string),"Y-m-d");
     	          }
     	          $out_string = $out_string . $char; 
     	          $sql_out = $sql_out ."'". $char."'";
@@ -113,7 +117,7 @@ if ($debug > 0) {   echo $buffer."<br>"; }  // Print field names
            $at_record_start = 1;
            if ($debug > 0) {echo  $curr_field. "," . $i .",".$out_string . "<br>"; }
            fwrite ($out_file_handle,  $i .",".$out_string.chr(13).chr(10) );
-           $sql = "insert into `g-cloud` (Framework, Lot, Supplier, Customer, For_Month, Product_Service_Description, Total_Charge)";
+           $sql = "insert into `g-cloud` (Framework, Lot, Supplier, Customer, For_Month, Product_Service_Description, Total_Charge, Sector, SME)";
      	   $sql = $sql ." values (".$sql_out."')";          
            echo "<p>".$sql."</p>";
 		   $result=mysqli_query($cxn,$sql);

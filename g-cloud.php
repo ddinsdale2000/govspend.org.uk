@@ -37,9 +37,9 @@
    if (strlen($search_client)==0) {$search_client = "all";}
    if (strlen($type)==0) 
      {if (strlen($term)>0) 
-        {$type = "Product";$rank=total;} // Page was called with a search term
+        {$type = "Customer";$rank=total;} // Page was called with a search term
       else
-        {$type = "Summary";} // Page was called with no type so assume Summary.
+        {$type = "Customer";} // Page was called with no type so assume Summary.
      }    
    if (strlen($term)==0){$term= "all";}   
    $scope = $_GET["scope"];  // specifies a sub query e.g. local = Local Government  
@@ -48,7 +48,9 @@
        echo "<h1>G-Cloud Spend Analysis - Local Government</h1>";
        $scope_sql =  "      ((`Customer` like '%council%') or 
                             (`Customer` like '%borough%')) and 
-                            (`Customer` <> 'British Council')";}
+                            (`Customer` <> 'British Council')";
+       $scope_sql = "(`Sector` like '%local%')";                     
+        }
    elseif ($scope == "health") {
        echo "<h1>G-Cloud Spend Analysis - Health</h1>";
        $scope_sql = "      ((`Customer`like '%nhs%') or 
@@ -58,11 +60,17 @@
                             (`Customer` like '%pct%') or 
                             (`Customer` like '%care quality%') or 
                             (`Customer` like '%health%')) and
-                            (`Customer` not like '%Animal%')";}
-   elseif ($scope == "emergency") {
-       echo "<h1>G-Cloud Spend Analysis - Fire and Police</h1>";
+                            (`Customer` not like '%Animal%')";
+       $scope_sql = "(`Sector` like '%health%')";                     
+                            
+                            }
+   elseif ($scope == "fire") {
+       echo "<h1>G-Cloud Spend Analysis - Fire and Rescue</h1>";
        $scope_sql =  "      (`Customer` like '%polic%') or 
-                            (`Customer` like '%fire%') ";}        
+                            (`Customer` like '%fire%') ";
+        $scope_sql = "(`Sector` like '%fire%') ";                     
+                           
+                            }        
    elseif ($scope == "all")  {
        if ($type == "Summary")
             {echo "<h1>G-Cloud Spend Analysis - Summary</h1>";}
@@ -84,7 +92,16 @@
                             (`Customer` not like '%borough%')) or 
                             ((`Customer` = 'British Council') or
                             (`Customer` like '%Animal%'))
-                            ";}
+                            ";
+       $scope_sql = "(`Sector` like '%central%')";                     
+
+							}
+	   elseif ($scope == "police") {$scope_sql = "(`Sector` like '%police%')"; echo "<h1>G-Cloud Spend Analysis - Police</h1>"; }
+	   elseif ($scope == "devolved") {$scope_sql = "(`Sector` like '%devolved%')";echo "<h1>G-Cloud Spend Analysis - Devolved Administrations</h1>"; }
+	   elseif ($scope == "education") {$scope_sql = "(`Sector` like '%education%')";echo "<h1>G-Cloud Spend Analysis - Education</h1>"; }
+	   elseif ($scope == "notforprofit") {$scope_sql = "(`Sector` like '%profit%')"; echo "<h1>G-Cloud Spend Analysis - Not for Profit</h1>"; }
+	   elseif ($scope == "private") {$scope_sql = "(`Sector` like '%private%')"; echo "<h1>G-Cloud Spend Analysis - Private Sector</h1>"; }
+
   if ($term <> "all") {echo "<h2>Analysing purchases where product contains: ".$term."</h2>";}
 //  if ($type == "Summary") 
 //     { 
@@ -96,8 +113,8 @@
        echo "<input type=\"submit\" value=\"Search\">";
        echo "</form></p>";
        echo "<p style = \"color:#3366ff; font-size:10pt\">For example, to search for all sales of 'Agile' just type the word Agile into the Product box and press the search button.</p>";
-       echo "<p style = \"color:#3366ff; font-size:10pt\"><b>IMPORTANT NOTE</b> - 20th March 2014 - Cabinet Office has removed details of the products sold from the latest release of data.  
-       		We have written to Cabinet Office and asked them add this data back back in. Seeing what has been bought is the most useful piece of information in the data set.</p>";
+       echo "<p style = \"color:#3366ff; font-size:10pt\"><b>IMPORTANT NOTE</b> - 16th April 2014 - The latest data feed does not contain details of the products bought.  
+       		We have written to Cabinet Office and asked them add this data back back in.</p>";
 //       }
        echo "</p>";
   
@@ -122,20 +139,35 @@ if (1) // (($type == "Summary") or ($scope != "all"))
             SUM(IF(month(`For_Month`)='12',`Total_Charge`,0)) AS `Dec`, 
             sum(`Total_Charge`) as `Total_Charge`
             FROM `g-cloud` WHERE 1 "; 
+	$sme_sql = "SELECT year(`For_Month`) as fw_year, 
+            	SUM(IF (SME='SME',`Total_Charge`,0)) AS `SME`, 
+            	SUM(IF(SME='Large',`Total_Charge`,0)) AS `Large`, 
+              	SUM(`Total_Charge`) as `Total_Charge`
+            	FROM `g-cloud` WHERE 1 ";
+
 
 // Add in the where clause for both / either a product query or a scope query 
            
     if ($scope <> "all") 
-    	{ $sql = $sql . " and (". $scope_sql .")"; }   
+    	{ 	$sql = $sql . " and (". $scope_sql .")"; 
+    		$sme_sql = $sme_sql . " and (". $scope_sql .")"; 
+    	}   
    	if ($term <> "all" ) 
-      	{ $sql = $sql . " and (`Product_Service_Description` LIKE '%". $term ."%')";}   
+      	{ 	$sql = $sql . " and (`Product_Service_Description` LIKE '%". $term ."%')";
+      		$sme_sql = $sme_sql . " and (`Product_Service_Description` LIKE '%". $term ."%')";
+      	}   
    	if ($search_supplier <> "all" ) 
-      	{ $sql = $sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";}   
+      	{ 	$sql = $sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
+      	 	$sme_sql = $sme_sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
+      	}   
    	if ($search_client <> "all" ) 
-      { $sql = $sql . "and (`Customer` LIKE '%". $search_client ."%')";}   
+      { 	$sql = $sql . "and (`Customer` LIKE '%". $search_client ."%')";
+       		$sme_sql = $sme_sql . "and (`Customer` LIKE '%". $search_client ."%')";
+      }   
             
 	$sql=$sql . " GROUP BY fw_year desc";
-
+	$sme_sql=$sme_sql . " GROUP BY fw_year desc";
+	
 // Execute the SQL Statement            
    $result=mysqli_query($cxn,$sql);
 // Output titles
@@ -263,33 +295,67 @@ if (1) // (($type == "Summary") or ($scope != "all"))
 	echo "}</script>";
   	echo "<p>  <div id=\"chart_div\" style=\"width: 800px; height: 200px;\"></div></p>";
 
-   echo "<p style = \"color:#3366ff; font-size:10pt\">Show sector :  ";
-   if ($type == "Supplier")
-   {echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=local&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Local Gov</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=health&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Health</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=emergency&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Fire & Police</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=central&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Central</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=alpha&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>All (no filter)</a>&nbsp&nbsp</p>";}
-   else
-   {echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=local&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Local Gov</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=health&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Health</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=emergency&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Fire & Police</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=central&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Central</a>&nbsp&nbsp";
-    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=alpha&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>All (no filter)</a>&nbsp&nbsp</p>";}
 
-     if ($scope == "local") 
-       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers with names containing Council or Borough; excludes British Council.</p>";}
-     elseif ($scope == "health") 
-       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers with names containing NHS, PCT, CMU, DH, Hospital or Health.  Includes Care Quality Commission.</p>";}
-     elseif ($scope == "emergency") 
-       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers with names containing Fire, and Police.</p>";}
-     elseif ($scope == "central") 
-       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers who do not appear in the Local, Health, Fire and Police listings.</p>";}
-     else  
-       {echo "<p style = \"color:#3366ff; font-size:10pt\">Showing all records (no filter).</p>";}
+//     if ($scope == "local") 
+//       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers with names containing Council or Borough; excludes British Council.</p>";}
+//     elseif ($scope == "health") 
+//       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers with names containing NHS, PCT, CMU, DH, Hospital or Health.  Includes Care Quality Commission.</p>";}
+//     elseif ($scope == "emergency") 
+//       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers with names containing Fire, and Police.</p>";}
+//     elseif ($scope == "central") 
+//       {echo "<p style = \"color:#3366ff; font-size:10pt\">Filter is &nbsp: Customers who do not appear in the Local, Health, Fire and Police listings.</p>";}
+//     else  
+//       {echo "<p style = \"color:#3366ff; font-size:10pt\">Showing all records (no filter).</p>";}
 
 ?>
+<?php     
+// -------------------------------------------------------------------------------------------------------------------------------    
+// OUTPUT THE SUMMARY TABLE OF SPEND BY SME / LARGE
+// -------------------------------------------------------------------------------------------------------------------------------    
 
+   $result=mysqli_query($cxn,$sme_sql);
+// Output titles
+   echo "<h2>Summary by SME / Non SME - £k</h2>";
+// Output the table div tag and header row
+   echo "<div class=\"datagrid\"><table>";
+   echo "<thead>";
+   echo "<tr>";
+   echo "<th>Year</th>";
+   echo "<th align = \"right\">SME Spend</th><th align = \"right\">Non SME Spend</th>";
+   echo "<th align = \"right\">SME %</th><th align = \"right\">Non SME %</th>";
+   echo "<th align = \"right\">Total</th>";
+   echo "</tr></thead>";
+   echo "<tbody>";
+// Process the query set results - not worrying about no results as there should always be some!   
+   while ($spend = mysqli_fetch_row($result))
+      {   echo "<tr><td> ".$spend[0]."</td>";
+          echo "<td align = \"right\"> £".number_format(intval($spend[1]/1000))."</td>";
+          $grand_total[1] += $spend[1];       
+          echo "<td align = \"right\"> £".number_format(intval($spend[2]/1000))."</td>";
+          $grand_total[2] += $spend[2];       
+          echo "<td align = \"right\"> ".number_format(intval(($spend[1]/$spend[3])*100))."%</td>";
+//          $grand_total[3] += $spend[3];       
+          echo "<td align = \"right\"> ".number_format(intval(($spend[2]/$spend[3])*100))."%</td>";
+//          $grand_total[4] += $spend[4];       
+          echo "<td align = \"right\"> £".number_format(intval($spend[3]/1000))."</td></tr>";
+          $grand_total[3] += $spend[3];       
+      }
+if ($grand_total[3]==0) {$grand_total[3]=1;}     
+// Output totals 
+   echo "<tr>";
+   echo "<td><b>Grand Totals</b></td>";
+   echo "<td align = \"right\"><b>£".number_format(intval($grand_total[1]/1000))."</b></td>";
+   echo "<td align = \"right\"><b>£".number_format(intval($grand_total[2]/1000))."</b></td>";
+   echo "<td align = \"right\"><b>".number_format(intval(($grand_total[1]/$grand_total[3])*100))."%</b></td>";
+   echo "<td align = \"right\"><b>".number_format(intval(($grand_total[2]/$grand_total[3])*100))."%</b></td>";
+   echo "<td align = \"right\"><b>£".number_format(intval($grand_total[3]/1000))."</b></td>";
+   echo "</tr>";
+   echo "</tbody></table></div>";
+
+// END OF SUMMARY TABLE BY SME / LARGE
+// -------------------------------------------------------------------------------------------------------------------------------      
+
+?>
 
 <?php     
 // -------------------------------------------------------------------------------------------------------------------------------    
@@ -364,13 +430,44 @@ if (1) // (($type == "Summary") or ($scope != "all"))
 // OUTPUT THE NAV BUTTONS
 // -------------------------------------------------------------------------------------------------------------------------------  term=all&search_supplier=all&search_client=cabinet  
 
-   echo "<p style = \"color:#3366ff; font-size:10pt\">Switch &nbsp&nbsp: ";
+   echo "<p style = \"color:#3366ff; font-size:10pt\">Show sector :</p>  ";
+   if ($type == "Supplier")
+   {
+    echo "<p><a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=central&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Central Gov</a>&nbsp&nbsp";
+   	echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=local&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Local Gov</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=health&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Health</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=fire&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Fire & Rescue</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=police&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Police</a>&nbsp&nbsp</p>";
+
+    echo "<p><a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=devolved&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Devolved</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=education&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Education</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=notforprofit&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Not For Profit</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=total&scope=private&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Private</a>&nbsp&nbsp";
+
+    echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=alpha&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>All (no filter)</a>&nbsp&nbsp</p>";}
+   else
+   {
+    echo "<p><a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=central&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Central Gov</a>&nbsp&nbsp";
+   	echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=local&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Local Gov</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=health&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Health</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=fire&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Fire & Rescue</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=police&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Police</a>&nbsp&nbsp</p>";
+
+    echo "<p><a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=devolved&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Devolved</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=education&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Education</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=notforprofit&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Not for Profit</a>&nbsp&nbsp";
+    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=total&scope=private&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Private Sector</a>&nbsp&nbsp";
+
+
+    echo "<a href=\"$server/g-cloud.php?type=Customer&rank=alpha&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>All (no filter)</a>&nbsp&nbsp</p>";}
+
+   echo "<p style = \"color:#3366ff; font-size:10pt\">Show detail for &nbsp&nbsp: </p><p>";
    if (($type == "Summary") or ($type == "Supplier") or ($type == "Product"))
-     {echo "<a href=\"$server/g-cloud.php?type=Customer&rank=$rank&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Show customers</a>&nbsp&nbsp";}
+     {echo "<a href=\"$server/g-cloud.php?type=Customer&rank=$rank&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Customers</a>&nbsp&nbsp";}
    if (($type == "Summary") or ($type == "Customer") or ($type == "Product"))
-     {echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=$rank&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Show suppliers</a>&nbsp&nbsp";}
+     {echo "<a href=\"$server/g-cloud.php?type=Supplier&rank=$rank&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Suppliers</a>&nbsp&nbsp";}
     if (($type == "Summary") or ($type == "Customer") or ($type == "Supplier"))
-     {echo "<a href=\"$server/g-cloud.php?type=Product&rank=$rank&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Show Products</a>&nbsp&nbsp</p>";}
+     {echo "<a href=\"$server/g-cloud.php?type=Product&rank=$rank&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>Products</a>&nbsp&nbsp</p>";}
 }
 ?>
 
@@ -381,7 +478,7 @@ if  (($type == "Customer") or ($type == "Supplier") or ($type == "Product"))
 // Output the nav buttons - &scope=$scope&term=".urlencode($term)."
    if (1) // ($scope == 'all')
    {
-     echo "<p style = \"color:#3366ff; font-size:10pt\">Rank by :  ";
+     echo "<p style = \"color:#3366ff; font-size:10pt\">Rank detail by : </p><p> ";
      echo "<a href=\"$server/g-cloud.php?type=$type&rank=alpha&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>$type Name</a>&nbsp&nbsp";
      echo "<a href=\"$server/g-cloud.php?type=$type&rank=Lot+1&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>IaaS</a>&nbsp&nbsp";
      echo "<a href=\"$server/g-cloud.php?type=$type&rank=Lot+2&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\" class=tv_button>PaaS</a>&nbsp&nbsp";
@@ -465,8 +562,9 @@ if  (($type == "Customer") or ($type == "Supplier") or ($type == "Product"))
   elseif ($rank == "Lot 3") {$sql=$sql." order by Lot3 desc";}
   elseif ($rank == "Lot 4") {$sql=$sql." order by Lot4 desc";}
 
-//echo $sql;
-// Execute the SQL Statement            
+// echo $sql;
+// Execute the SQL Statement   
+         
    $result=mysqli_query($cxn,$sql);
 // Output the table div tag and header row
 // <!-- Table code from http://tablestyler.com/#-->
@@ -484,7 +582,7 @@ if  (($type == "Customer") or ($type == "Supplier") or ($type == "Product"))
 // Process the query set results - not worrying about no results as there should always be some!    
    while ($spend = mysqli_fetch_row($result))     
     {       
-      if (strlen($spend[0])>0)  // This removes empty rows 
+      if (strlen($spend[0])>=0)  // This removes empty rows 
         { if ($colour == 0) {echo "<tr><td><b>";$colour = 1;} else {echo "<tr  class=\"alt\"><td><b>";$colour = 0;} 
           $i=$i+1;
           echo $i."</b></td>";
@@ -495,7 +593,10 @@ if  (($type == "Customer") or ($type == "Supplier") or ($type == "Product"))
             }
           elseif ($type == "Product")
             { //echo "<td><a href=\"$server/g-cloud_detail.php?type=Product&rank=$rank&scope=$scope&term=".urlencode($term)."&Product=".urlencode($spend[0])."\">".$spend[0]."</a></td>";
-                echo "<td><a href=\"$server/g-cloud.php?type=$type&rank=alpha&scope=$scope&term=".urlencode($spend[0])."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\">$spend[0]</a></td>";
+				if (strlen($spend[0])>0)                
+				{echo "<td><a href=\"$server/g-cloud.php?type=$type&rank=alpha&scope=$scope&term=".urlencode($spend[0])."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($search_client)."\">$spend[0]</a></td>";}
+				else
+				{echo "<td>No product details provided</td>";}
             }
           else
             { //echo "<td><a href=\"$server/g-cloud_detail.php?type=Customer&rank=$rank&scope=$scope&term=".urlencode($term)."&Customer=".urlencode($spend[0])."\">".$spend[0]."</a></td>";

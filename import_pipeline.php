@@ -20,7 +20,7 @@ include("init.php");
 $cxn = mysqli_connect("$dbh", "$dbu", "$dbp", "govspend")or die("cannot connect"); 
 
 $debug = 0;
-$filename = "./tmp/data_list_of_current_pipelines.csv"; // name of the file to import
+$filename = "./tmp/List_of_current_pipelines.csv"; // name of the file to import
 $filename = "http://online.contractsfinder.businesslink.gov.uk/public_files/Reports/NotSet/List_of_current_pipelines.csv";
 $out_file = "./tmp/data_list_of_current_pipelines_out.csv";
 
@@ -53,6 +53,13 @@ if ($debug > 0) {   echo $buffer; }  // Print field names
     $fields = explode(",", $buffer);
     $num_fields = count ($fields); // number of fields in the file
     echo $numfields;
+	// Hardcoding field names due to issue with new field (Textbox39) in august feed.  We think Textbox39 should be SpendFinancial2019_20
+	$fields = "	id,NoticeOrganisationName,NoticeTitle,PipelineType,ReferenceNumber,Confidence,SpendFinancial2014_15,SpendFinancial2015_16,
+				SpendFinancial2016_17,SpendFinancial2017_18,SpendFinancial2018_19,SpendFinancial2019_20,TotalCapitalCost,DeliveryLocation,
+				DeliveryLocationNUTSCode,DeliveryLocationLAUCode,DeliveryLocationComments,StartDate,ApproachToMarket,ApproachDate,
+				LastChangeDate,PublishedDate,ContactEmail,BuyerGroupID,BuyerGroupName,NumberOfDocuments,CPVCodes,
+				NoticeID,ParentNoticeID,RootNoticeID,TopBuyerGroup,TopBuyerGroupName,TopLevelDepartment,TopLevelDepartmentName,URL" ;
+
     $i = 0; // Reset for record count
     $at_record_start = 1; // Variable = 1 if we are at the start of a new record or 0 if we are on a record that spans multiple lines
     $in_string = 0; // used to see if we are in a string field that may contain commas that are part of the string and not delimiters e.g. "£2,130.00"
@@ -85,7 +92,7 @@ if ($debug > 0) {   echo $buffer; }  // Print field names
        //    echo $buffer;
            if ($debug > 0) {echo  $curr_field. "," . $i .",".$out_string . "<br>"; }
            fwrite ($out_file_handle,  $i .",".$out_string.chr(13).chr(10) );
-           $sql = "insert into pipeline values ('".$i ."',".$sql_out."')";          
+           $sql = "insert into pipeline ($fields) values ('".$i ."',".$sql_out."')";          
            echo "<p>".$sql."</p>";
 		   $result=mysqli_query($cxn,$sql);
 		   $sql_out = "'";

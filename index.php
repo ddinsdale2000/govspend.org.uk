@@ -34,7 +34,7 @@
       </p>
       <center>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
-      <p> <a href="news.php" class=tv_button>16 Apr 2014 <br>G-Cloud news</a></p>
+      <p> <a href="news.php" class=tv_button>28 Jul 2014 <br>G-Cloud news</a></p>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
 <!--      <p> <a href="index.php" class=tv_button>Not yet working</a></p> -->
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
@@ -51,7 +51,7 @@
         $sql = "SELECT `For_Month` , sum(`Total_Charge`)/10000  FROM `g-cloud` group by `For_Month` desc";
         $result=mysqli_query($cxn,$sql);
         $spend = mysqli_fetch_row($result);
-        echo "<p style = \"color:#3366ff; font-size:10pt\">  - Mar 2014 : ".str_repeat("&nbsp",16)."£".number_format(intval($spend[1])/100)."m</p>";
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - June 2014 : ".str_repeat("&nbsp",14)."£".number_format(intval($spend[1])/100)."m</p>";
 
         $sql = "SELECT sum(`Total_Charge`)/1000000  FROM `g-cloud` WHERE 1";
         $result=mysqli_query($cxn,$sql);
@@ -68,13 +68,9 @@
       <p style = "color:#3366ff; font-size:10pt"><br><b>Spend Pipeline</b> </p>
 
       <?php
+
         $target_date = Date("Y-m-d");
-        $sql = "SELECT sum(`SpendFinancial2013_14`)/1000000 as 'FY13_14' FROM pipeline WHERE 1";
-        $result=mysqli_query($cxn,$sql);
-        $spend = mysqli_fetch_row($result);
-        $total_spend = $spend[0];
-        //mysqli_close($result);
-        echo "<p style = \"color:#3366ff; font-size:10pt\">  - 2013: ".str_repeat("&nbsp",17)."£".number_format(intval($spend[0]))."m</p>";
+		$spend[0] = 0;
 
         $sql = "SELECT sum(`SpendFinancial2014_15`)/1000000 as 'FY14_15' FROM pipeline WHERE 1";
         $result=mysqli_query($cxn,$sql);
@@ -105,6 +101,13 @@
         $spend = mysqli_fetch_row($result);
         $total_spend += $spend[0];
         echo "<p style = \"color:#3366ff; font-size:10pt\">  - 2018: ".str_repeat("&nbsp",15)."£".number_format(intval($spend[0]))."m</p>";
+
+        $sql = "SELECT sum(`SpendFinancial2019_20`)/1000000 as 'FY19_20' FROM pipeline WHERE 1";
+        $result=mysqli_query($cxn,$sql);
+        $spend = mysqli_fetch_row($result);
+        $total_spend += $spend[0];
+        //mysqli_close($result);
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - 2019: ".str_repeat("&nbsp",15)."£".number_format(intval($spend[0]))."m</p>";
 
 // Not sure whether this figure is useful
 //        $sql = "SELECT sum(`TotalCapitalCost`)/1000000 as 'TotalCapitalCost' FROM pipeline WHERE 1";
@@ -171,13 +174,16 @@
       <p style="size:10pt; background-color:#3366FF; color:#ffffff; border-radius:1em; text-align:center; padding:2px;">Updates</p>
       <p style = "color:#3366ff; font-size:10pt"><br><b>Recent updates</b> </p>
       
-      <p style = "color:#3366ff; font-size:10pt"><br>Apr 16, 2014 - G-Cloud March spend added.</p>
-      <p style = "color:#3366ff; font-size:10pt"><br>Mar 21, 2014 - G-Cloud Jan / Feb spend added.</p>
-      <p style = "color:#3366ff; font-size:10pt"><br>Feb 07, 2014 - G-Cloud December spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Jul 29, 2014 - G-Cloud June spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Jun 13, 2014 - G-Cloud May spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>May 16, 2014 - G-Cloud April spend added.</p>
       <p style = "color:#3366ff; font-size:10pt"><br>Jan 31, 2014 - GDS publish G-Cloud spend graphs on performance platform.
       <a href="https://www.gov.uk/performance/g-cloud" alt = "G-Cloud Sales Information on Cabinet Office web site" target="_blank">click here to see</a>
       </p>
 <?php
+//      <p style = "color:#3366ff; font-size:10pt"><br>Apr 16, 2014 - G-Cloud March spend added.</p>
+//      <p style = "color:#3366ff; font-size:10pt"><br>Mar 21, 2014 - G-Cloud Jan / Feb spend added.</p>
+//      <p style = "color:#3366ff; font-size:10pt"><br>Feb 07, 2014 - G-Cloud December spend added.</p>
 //      <p style = "color:#3366ff; font-size:10pt"><br>Jan 13, 2014 - Spend pipeline beta released.</p>
 //      <p style = "color:#3366ff; font-size:10pt"><br>Jan 8, 2014 - Spend pipeline data updated.</p>
 //      <p style = "color:#3366ff; font-size:10pt"><br>Dec 20, 2013 - G-Cloud November spend added.</p>

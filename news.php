@@ -62,19 +62,18 @@
 <p><b>Forecasts</b></p>
 <ul>
 <li>We are holding our forecast for 2014 at £250m, however, this figure is looking under pressure - £280m is possible if growth continues. </li><br>
-<li>The trend figure for spend topped £20m a month for the first time in April and is looking robust at that level.  We expect average monthly spend to increase by about £1m a month to £30m a month by year end.</li><br>
+<li>The trend figure for spend is now £24m.  It topped £20m a month for the first time in April and continues to grow at about £1m a month.  
+  We expect average monthly spend to increase to roughly £30m a month by year end.</li><br>
 </ul>
 
 
 
 <h3>You are welcome to use and copy any information on this site (including the presentations) as long as you attribute the source as GovSpend.Org.UK </h3>
-<p>We are currently updating the presentation.  Will be there tonight.</p>
-<?php
 
-//<p>
-//<iframe src="//www.slideshare.net/slideshow/embed_code/37509219" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
-//</p>
-?>
+<p>
+<iframe src="//www.slideshare.net/slideshow/embed_code/38378156" width="476" height="400" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+</p>
+
 <h3>Previous news releases and presentations can be found at:</h3>
 <p> <a href="news-2014-06.php">G-Cloud News - Aug 2014</a></p>
 <p> <a href="news-2014-05.php">G-Cloud News - Jun 2014</a></p>

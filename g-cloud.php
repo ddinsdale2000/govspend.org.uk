@@ -113,8 +113,6 @@
        echo "<input type=\"submit\" value=\"Search\">";
        echo "</form></p>";
        echo "<p style = \"color:#3366ff; font-size:10pt\">For example, to search for all sales of 'Agile' just type the word Agile into the Product box and press the search button.</p>";
-       echo "<p style = \"color:#3366ff; font-size:10pt\"><b>IMPORTANT NOTE</b> - 16th April 2014 - The latest data feed does not contain details of the products bought.  
-       		We have written to Cabinet Office and asked them add this data back back in.</p>";
 //       }
        echo "</p>";
   
@@ -366,7 +364,8 @@ if (1) // (($type == "Summary") or ($scope != "all"))
 // Initialisations
    $grand_total = array(0,0,0,0,0,0,0,0,0);  // Array to calculate store the column totals
 // Prepare the SQL statement to do the cross tab   
-  $sql = "SELECT Framework, 
+//  $sql = "SELECT Framework, 
+   $sql = "SELECT year(`For_Month`) as fw_year, 
             SUM(IF(Lot='1',`Total_Charge`,0)) AS Lot1, 
             SUM(IF(Lot='2',`Total_Charge`,0)) AS Lot2,
             SUM(IF(Lot='3',`Total_Charge`,0)) AS Lot3,
@@ -383,16 +382,18 @@ if (1) // (($type == "Summary") or ($scope != "all"))
    	if ($search_client <> "all" ) 
       { $sql = $sql . "and (`Customer` LIKE '%". $search_client ."%')";}   
 
-	$sql=$sql . " GROUP BY Framework";
+//	$sql=$sql . " GROUP BY Framework";
+	$sql=$sql . " GROUP BY fw_year desc";
+//	echo $sql;
 // Execute the SQL Statement            
    $result=mysqli_query($cxn,$sql);
 // Output titles
-   echo "<h2>Summary by Framework and Lot - £k</h2>";
+   echo "<h2>Summary by Lot - £k</h2>";
 // Output the table div tag and header row
    echo "<div class=\"datagrid\"><table>";
    echo "<thead>";
    echo "<tr>";
-   echo "<th>Framework</th>";
+   echo "<th>Year</th>";
    echo "<th align = \"right\">IaaS<br>(Lot 1)</th><th align = \"right\">PaaS<br>(Lot 2)</th>";
    echo "<th align = \"right\">SaaS<br>(Lot 3)</th><th align = \"right\">SCS<br>(Lot 4)</th>";
    echo "<th align = \"right\">Total</th>";

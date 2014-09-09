@@ -8,8 +8,8 @@
 <div id="ddcolortabs">
 <ul>
 <li style="margin-left: 1px"><a href="index.php" title="Home"><span>Home</span></a></li>
-<li id="current"><a href="pipeline_intro.php" title="Introduction"><span>Introduction</span></a></li>
 <li><a href="pipeline.php" title="Search Pipeline"><span>Search Pipeline</span></a></li>
+<li id="current"><a href="pipeline_intro.php" title="More info"><span>More info</span></a></li>
 
 </ul>
 </div>

@@ -31,7 +31,7 @@
     $name = $_GET['name'] ; // search term
     if (strlen($name) == 0) {$name = "all"; }
 
-    echo "<h2>Search Spend Pipeline</h1>";
+    echo "<h2>Search Spend Pipeline</h2>";
  //   echo "<p style = \"color:#3366ff; font-size:10pt\">This week (13th - 17th Jan 2014) we are testing this capability.  
  //   All is working fine but if you spot any issues (or have ideas) please send to : <a href= \"mailto:support@tgovspend.org.uk\" style= \"display:inline\">support@govspend.org.uk</a></p>";
     if (strlen($term) == 0 ) {echo "<h2>Searching for - All records</h2>";}
@@ -218,6 +218,28 @@
 </table></div>
 
 <?php
+echo "<p></p>";
+if (($name != "all") or (strlen($term) > 0))
+{
+   echo "<h2>Forthcoming tenders - Post 1st July 2014</h1>";
+
+$sql = "SELECT ApproachDate, Confidence, NoticeOrganisationName, NoticeTitle, 
+		(SpendFinancial2013_14+SpendFinancial2014_15+SpendFinancial2015_16+SpendFinancial2016_17+SpendFinancial2017_18+SpendFinancial2018_19), URL 
+		FROM `pipeline` WHERE ApproachDate >= \"2014-07-01\" ";
+if ($name != "all")
+	{	$sql = $sql . " and `PipelineType` = \"$name\" ";}
+if (strlen($term)> 0)
+	{   $sql = $sql . " and (NoticeOrganisationName like '%$term%') ";}
+$sql .= " order by ApproachDate "	;
+		
+$titles = "Approach to market expected; Confidence; Organisation; Description; Total Spend";
+$colwidths = "10 10 20 40 10";
+$cell_justification = "center center left left right ";
+$numcols = 5;
+$options = "URL";
+cz_table($sql, $titles, $colwidths, $cell_justification, $numcols, $options);
+}
+
 $sql = "";
 if (($name != "all") or (strlen($term) > 0)) // Output the detail table if there is a query 
 {
@@ -373,3 +395,70 @@ is reduced to 5 years (2014 - 2019).  The pipeline contains forecasts for more t
 <?php include ("footer.php"); ?>
 </body>
 </html>
+<?php
+function cz_table($sql, $titles, $colwidths, $cell_justification, $numcols, $options)
+{
+	// $sql is the squl that returns the result set
+	// $titles are the column titles separated by semi-colon (;)
+	// $colwidths is the width of the columns as integers separated by spaces.  Widths are interpreted as percentages i.e. 10 = 10%
+	// $numcols specifies the number of columns to be used e.g. 5 = the first five and ignores columns after that
+   	include("init.php");
+	$cxn = mysqli_connect("$dbh", "$dbu", "$dbp", "govspend") or die("cannot connect"); 
+	$result=mysqli_query($cxn,$sql);
+	$count = 0;
+	$clour = 1;
+
+	echo "<div class=\"datagrid\">";
+	echo "	<table>";
+ 	$title_array = explode( ";", $titles);
+ 	$cell_array = explode( " ", $cell_justification);
+ 	if (strlen($colwidths) > 0)
+ 	{	
+ 	 	echo "		<colgroup>";
+		$colwidths_array = explode( " ", $colwidths);
+		for ($i=0; $i< $numcols; $i++)
+		{
+		echo "			<col span=\"1\" style=\"width: $colwidths_array[$i]%;\">";
+		} 
+		echo "			</colgroup>";
+	}	
+ 	echo "		<thead>";
+ 	if (strlen($titles) > 0)
+	{
+  		echo "			<tr>";
+		for ($i=0; $i< $numcols; $i++)
+		{  	
+ 			echo "	  			<th align = \"$cell_array[$i]\">$title_array[$i]</th>";
+ 		}
+		echo "				</tr>";
+	}
+	echo "			</thead>";
+	
+	echo "		<tbody><tr>";
+	while ($row= mysqli_fetch_row($result))
+	{
+	    if ($colour == 0) {echo "<tr>";$colour = 1;} else {echo "<tr  class=\"alt\">";$colour = 0;} 
+		for ($i=0; $i< $numcols; $i++)
+		{
+			if ($i==0)
+				{echo "<td align = \"$cell_array[$i]\"> ".date("d-m-Y",strtotime($row[$i]))." </td>";}
+			elseif ($i==4)
+				{echo "<td align = \"$cell_array[$i]\"> £".number_format($row[$i]/1000)."k</td>";}
+			else
+				{ if (($options == "URL") and ($i == 3))
+					{echo "<td align = \"$cell_array[$i]\"> <a href=\"$row[5]\" target=\"_blank\">$row[$i] </a> </td>";}
+					else
+					{echo "<td align = \"$cell_array[$i]\"> $row[$i] </td>";}
+				}
+			$total .= ($row[$i]/1000);	
+		}
+		echo "		</tr>";
+		$count +=1;
+	}
+	echo "		</tbody>";
+	echo "	</table>";
+	echo "</div>";
+
+}
+
+?>

@@ -34,12 +34,15 @@
       </p>
       <center>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
-      <p> <a href="news.php" class=tv_button>28 Jul 2014 <br>G-Cloud news</a></p>
+      <p> <a href="news.php" class=tv_button>26 Aug 2014 <br>G-Cloud news</a></p>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
 <!--      <p> <a href="index.php" class=tv_button>Not yet working</a></p> -->
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
+    <a href="https://twitter.com/GovSpendOrgUK" class="twitter-follow-button" data-show-count="false">Follow @GovSpendOrgUK</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
       </center>
     </nav>
+
     <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
 
     <div id="navfooter">
@@ -51,7 +54,7 @@
         $sql = "SELECT `For_Month` , sum(`Total_Charge`)/10000  FROM `g-cloud` group by `For_Month` desc";
         $result=mysqli_query($cxn,$sql);
         $spend = mysqli_fetch_row($result);
-        echo "<p style = \"color:#3366ff; font-size:10pt\">  - June 2014 : ".str_repeat("&nbsp",14)."£".number_format(intval($spend[1])/100)."m</p>";
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - July 2014 : ".str_repeat("&nbsp",16)."£".number_format(intval($spend[1])/100)."m</p>";
 
         $sql = "SELECT sum(`Total_Charge`)/1000000  FROM `g-cloud` WHERE 1";
         $result=mysqli_query($cxn,$sql);
@@ -174,11 +177,11 @@
       <p style="size:10pt; background-color:#3366FF; color:#ffffff; border-radius:1em; text-align:center; padding:2px;">Updates</p>
       <p style = "color:#3366ff; font-size:10pt"><br><b>Recent updates</b> </p>
       
+      <p style = "color:#3366ff; font-size:10pt"><br>Aug 26, 2014 - G-Cloud July spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Aug 3, 2014 - Spend Pipeline data updated including 2019 forecast.</p>
       <p style = "color:#3366ff; font-size:10pt"><br>Jul 29, 2014 - G-Cloud June spend added.</p>
       <p style = "color:#3366ff; font-size:10pt"><br>Jun 13, 2014 - G-Cloud May spend added.</p>
       <p style = "color:#3366ff; font-size:10pt"><br>May 16, 2014 - G-Cloud April spend added.</p>
-      <p style = "color:#3366ff; font-size:10pt"><br>Jan 31, 2014 - GDS publish G-Cloud spend graphs on performance platform.
-      <a href="https://www.gov.uk/performance/g-cloud" alt = "G-Cloud Sales Information on Cabinet Office web site" target="_blank">click here to see</a>
       </p>
 <?php
 //      <p style = "color:#3366ff; font-size:10pt"><br>Apr 16, 2014 - G-Cloud March spend added.</p>
@@ -190,8 +193,10 @@
  //     <p style = "color:#3366ff; font-size:10pt"><br>Nov 27, 2013 - G-Cloud October spend added.</p>
 //      <p style = "color:#3366ff; font-size:10pt"><br>Oct 18, 2013 - G-Cloud September spend added.</p>
 ?>
-      <p style = "color:#3366ff; font-size:10pt"><br>Follow us on twitter to get news directly - @GovSpendOrgUK.</p>
+      	<p style = "color:#3366ff; font-size:10pt"><br>Follow us on twitter to get news directly:</p> <p>&nbsp</p>
 
+    <a href="https://twitter.com/GovSpendOrgUK" class="twitter-follow-button" data-show-count="false">Follow @GovSpendOrgUK</a>
+      
       <p>&nbsp</p>
 
       <p style="size:10pt; background-color:#3366FF; color:#ffffff; border-radius:1em; text-align:center; padding:2px;">Data Sources</p>
@@ -237,7 +242,19 @@
       <h3>Thank you</h3>
       <p>Thank you for having a look at GovSpend.Org.UK.  We welcome your suggestions on how we may improve the service.  Choose Contact Us from the menu above
       to get in touch.</p>   
-         
+      
+      <h3>Helpful links</h3>
+      <p>You may also be interested in the following services that explore and analyse Government spend data</p>
+		<ul>
+			<li>	
+   		  		<a href="https://www.gov.uk/performance/g-cloud" alt = "G-Cloud Sales Information on Cabinet Office web site" target="_blank" style = "display:inline">G-Cloud Spend Graphs</a> 
+		      	published by Government Digital Service
+      		</li>
+ 			<li><a href="https://public.tableausoftware.com/profile/danosirra#!/vizhome/G-Cloud/D-Customers" alt = "G-Cloud Sales Information puyblished by Methods Consulting Ltd" target="_blank" style = "display:inline">G-Cloud Spend Tables</a> 
+      			published by Methods Consulting Ltd</p>
+      		</li>
+      	</ul> 
+    <p></p>     
     </article>
   </div>
 </div>

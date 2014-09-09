@@ -20,7 +20,7 @@ include("init.php");
 $cxn = mysqli_connect("$dbh", "$dbu", "$dbp", "govspend")or die("cannot connect"); 
 
 $debug = 0;
-$filename = "./tmp/List_of_current_pipelines.csv"; // name of the file to import
+$filename = "./upload/List_of_current_pipelines_2014-08-02.csv"; // name of the file to import
 $filename = "http://online.contractsfinder.businesslink.gov.uk/public_files/Reports/NotSet/List_of_current_pipelines.csv";
 $out_file = "./tmp/data_list_of_current_pipelines_out.csv";
 
@@ -52,19 +52,29 @@ if ($debug > 0) {   echo $buffer; }  // Print field names
 
     $fields = explode(",", $buffer);
     $num_fields = count ($fields); // number of fields in the file
-    echo $numfields;
+//    $num_fields = 34;
+    echo "<p>Numfields: $num_fields</p>";
 	// Hardcoding field names due to issue with new field (Textbox39) in august feed.  We think Textbox39 should be SpendFinancial2019_20
 	$fields = "	id,NoticeOrganisationName,NoticeTitle,PipelineType,ReferenceNumber,Confidence,SpendFinancial2014_15,SpendFinancial2015_16,
 				SpendFinancial2016_17,SpendFinancial2017_18,SpendFinancial2018_19,SpendFinancial2019_20,TotalCapitalCost,DeliveryLocation,
 				DeliveryLocationNUTSCode,DeliveryLocationLAUCode,DeliveryLocationComments,StartDate,ApproachToMarket,ApproachDate,
 				LastChangeDate,PublishedDate,ContactEmail,BuyerGroupID,BuyerGroupName,NumberOfDocuments,CPVCodes,
 				NoticeID,ParentNoticeID,RootNoticeID,TopBuyerGroup,TopBuyerGroupName,TopLevelDepartment,TopLevelDepartmentName,URL" ;
-
+	$types = "T T T T T T I I I I I I I T T T T T T T T T T T T T T T T T T T T T";
+	$field_types = explode (" ", $types );
+	$field_types[17]="D"; // StartDate
+	$field_types[19]="D"; // ApproachDate
+	$field_types[20]="D"; // LastChangeDate
+	$field_types[21]="D"; // PublishedDate
+	  
+	$field=""; // This variable is used to store the field data
+	echo date("Y-m-d",strtotime("29 May 14 00:01") );
     $i = 0; // Reset for record count
     $at_record_start = 1; // Variable = 1 if we are at the start of a new record or 0 if we are on a record that spans multiple lines
     $in_string = 0; // used to see if we are in a string field that may contain commas that are part of the string and not delimiters e.g. "£2,130.00"
-	$sql_out = "'";
+	$sql_out = "";  // builds up the SQL insert string on a field by field basis
     while (($buffer = fgets($handle)) !== false) {
+    	echo "<p>$buffer</p>";
       If ($debug>0) {echo "Record" . $i;}  
       if ($at_record_start == 1)
       {  $curr_field = 1; unset($fielddata); $out_string = ""; $at_record_start=0; } // initialise variables for a new row
@@ -74,28 +84,51 @@ if ($debug > 0) {   echo $buffer; }  // Print field names
     	   {  if ($in_string == 0) {$in_string = 1;} else {$in_string = 0; } } 
     	   elseif ($char == ",") //If the character is a comma AND $in_string ==0, then the character is a field delimiter
     	   {  if ($in_string == 0) 
-    	       {  $out_string = $out_string . $char; 
-    	          $curr_field += 1; 
-    	          $sql_out = $sql_out ."'". $char."'";
+    	       {  	
+    	       		$out_string = $out_string . $char; 
+    	          	if ( $field_types[$curr_field] == "D")
+    	          	{  	//echo "<p>Date \>$field\<>".date("Y-m-d",strtotime($field) )." <</p>"; 	          	
+    	          		$sql_out = $sql_out ."'".date("Y-m-d",strtotime($field) )."'". $char;
+    	          	}
+    	          	elseif ( $field_types[$curr_field] == "I")
+    	          	{
+    	          		// echo "<p>Integer \>$field\<</p>"; 	
+    	          		$sql_out = $sql_out ."'".(intval($field)+0)."'".$char;
+    	          	}
+    	          	else
+    	          	{
+    	          		// echo "<p>Text \>$field\<</p>"; 	
+    	          		$sql_out = $sql_out ."'".$field."'". $char;
+    	          	}
+    	          	//echo "<p>$curr_field . $field</p>";
+    	       		$field="";
+    	          	$curr_field += 1; 
+    	          	
     	       }
     	   }
     	   elseif ( ($char == chr(10)) or ($char == chr(13))) {} // strip carriage returns and line feeds
     	   else // not a double quote or a comma so just add to outstring
-    	   {  $out_string = $out_string . $char;
-    	      if ($char != "'")
-    	      {  $sql_out = $sql_out.$char;}
+    	   {  	$field=$field.$char;
+    	   		 $out_string = $out_string . $char;
+    	    	  if ($char != "'")
+    	      	{ // $sql_out = $sql_out.$char;
+    	      	}
     	   }
+    	   
     	 }
-        if ($curr_field == $num_fields) // in this case, the end of record and end of line are OK
+		$sql_out = $sql_out."'" .$field."'";
+		$field="";
+
+        if ($curr_field == ($num_fields)) // in this case, the end of record and end of line are OK
          { $i = $i + 1 ;
            $at_record_start = 1;
        //    echo $buffer;
            if ($debug > 0) {echo  $curr_field. "," . $i .",".$out_string . "<br>"; }
            fwrite ($out_file_handle,  $i .",".$out_string.chr(13).chr(10) );
-           $sql = "insert into pipeline ($fields) values ('".$i ."',".$sql_out."')";          
+           $sql = "insert into pipeline ($fields) values ('".$i ."',".$sql_out.")";          
            echo "<p>".$sql."</p>";
 		   $result=mysqli_query($cxn,$sql);
-		   $sql_out = "'";
+		   $sql_out = "";
 
          }
         else { 

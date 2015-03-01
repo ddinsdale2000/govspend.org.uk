@@ -96,12 +96,12 @@
      echo "<p style = \"color:#3366ff; font-size:10pt\">Currently searching organisation name, notice description & CPV Code description</p>";
 
      echo "<p style = \"color:#3366ff; font-size:10pt\">Group by &nbsp: ";
-     echo "<a href=\"$server/pipeline.php?analyse=pipeline_type&term=$term\" class=tv_button>Pipeline type</a>&nbsp&nbsp";
+     echo "<a href=\"$server/pipeline.php?analyse=pipeline_type&term=$term\" class=tv_button>Category</a>&nbsp&nbsp";
      echo "<a href=\"$server/pipeline.php?analyse=organisation&term=$term\" class=tv_button>Organisation name</a>&nbsp&nbsp";  
      echo "<a href=\"$server/pipeline.php?analyse=cpv_code&term=$term\" class=tv_button>Primary CPV code</a>&nbsp&nbsp";  
      echo "<a href=\"$server/pipeline.php\" class=tv_button>Show all</a>&nbsp&nbsp";
 
-  if  ($analyse == "pipeline_type") {echo "<h2>Summary by Pipeline Type - £m</h2>";}
+  if  ($analyse == "pipeline_type") {echo "<h2>Summary by Category of opportunity - £m</h2>";}
   elseif  ($analyse == "organisation") {echo "<h2>Summary by Organisation - £m</h2>";}
   elseif  ($analyse == "cpv_code") {echo "<h2>Summary by CPV code (division level) - £m</h2>";}
     
@@ -121,7 +121,7 @@
   <thead>
     <tr>
 <?php   
-      if ($analyse == "pipeline_type") {echo "<th>Pipeline Type</th>";}
+      if ($analyse == "pipeline_type") {echo "<th>Category</th>";}
       elseif ($analyse == "title") {echo "<th>Notice title</th>";}
       elseif ($analyse == "organisation") {echo "<th>Organisation</th>";}
       elseif ($analyse == "cpv_code") {echo "<th>CPV Division</th>";}
@@ -221,11 +221,11 @@
 echo "<p></p>";
 if (($name != "all") or (strlen($term) > 0))
 {
-   echo "<h2>Forthcoming tenders - Post 1st July 2014</h1>";
+   echo "<h2>Forthcoming tenders in 2015</h1>";
 
 $sql = "SELECT ApproachDate, Confidence, NoticeOrganisationName, NoticeTitle, 
 		(SpendFinancial2013_14+SpendFinancial2014_15+SpendFinancial2015_16+SpendFinancial2016_17+SpendFinancial2017_18+SpendFinancial2018_19), URL 
-		FROM `pipeline` WHERE ApproachDate >= \"2014-07-01\" ";
+		FROM `pipeline` WHERE ApproachDate >= \"2015-01-01\" and ApproachDate <= \"2015-12-31\" ";
 if ($name != "all")
 	{	$sql = $sql . " and `PipelineType` = \"$name\" ";}
 if (strlen($term)> 0)
@@ -293,7 +293,7 @@ if (($name != "all") or (strlen($term) > 0)) // Output the detail table if there
 
      }
 
-echo "<h2>Details of individual opportunities</h2>";
+echo "<h2>Details of all opportunities in the pipeline</h2>";
 echo "<p style = \"color:#3366ff; font-size:10pt\">Click the Opportunity Title to view the opportunity on Contracts Finder</p>";
 
     if ($debug > 0 ) {echo "<p>".$sql."</p>";}
@@ -317,8 +317,8 @@ echo "<p style = \"color:#3366ff; font-size:10pt\">Click the Opportunity Title t
   echo "  <th align = \"left\"></th>";
 
   if ($analyse == "pipeline_type") { echo "<th>Organisation </th> <th>Opportunity Title</th>";}
-  elseif ($analyse == "title") { echo "<th>Pipeline Type</th> <th>Organisation</th>";}
-  elseif ($analyse == "organisation") {echo "<th>Pipeline Type</th><th>Opportunity Title</th>";}
+  elseif ($analyse == "title") { echo "<th>Category</th> <th>Organisation</th>";}
+  elseif ($analyse == "organisation") {echo "<th>Category</th><th>Opportunity Title</th>";}
   elseif ($analyse == "cpv_code") { echo "<th>Primary CPV Code</th> <th>Opportunity Title</th>";}
     
   echo "    <th align = \"right\">14/15</th>";
@@ -387,7 +387,7 @@ echo "<p style = \"color:#3366ff; font-size:10pt\">Click the Opportunity Title t
 
 <h2>Notes</h2>
 <p>Total Figures are in £m (£1m = £1,000,000), individual opportunities are in £k (£1k - £1,000). Figures are always rounded down. 
-If a total is £0, click the links (e.g. Pipeline Type, Organisation Name, Opportunity Title etc.) to see the detail.  
+If a total is £0, click the links (e.g. Category, Organisation Name, Opportunity Title etc.) to see the detail.  
 It is likely that the total is £0 because the organisation providing the data has not entered a value at this time.</p> 
 <p>Totals on this screen may not match totals on the Introduction screen as the timeframe on this screen 
 is reduced to 5 years (2014 - 2019).  The pipeline contains forecasts for more than 5 years.</p>

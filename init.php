@@ -9,10 +9,6 @@ $dbh = "localhost";
 $dbu = "root";
 $dbp = "";
 $server="http://localhost/govspend";
-/* for fasthost hosting */
+$security_code = "mysecuritycode";
 
-//$dbh = "";
-//$dbu = "";
-//$dbp = "";
-// $server = "http://www.govspend.org.uk";
 ?>

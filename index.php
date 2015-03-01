@@ -34,7 +34,8 @@
       </p>
       <center>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
-      <p> <a href="news.php" class=tv_button>26 Aug 2014 <br>G-Cloud news</a></p>
+      
+      <p> <a href="news.php" class=tv_button>28 Feb 2014 <br>G-Cloud news</a></p>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
 <!--      <p> <a href="index.php" class=tv_button>Not yet working</a></p> -->
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
@@ -51,20 +52,31 @@
        <p style = "color:#3366ff; font-size:10pt"><br><b>G-Cloud Spend</b> </p>
 
       <?php
+		$for_month = cz_get('select max( for_month ) from `g-cloud`');
+//		echo $for_month;
         $sql = "SELECT `For_Month` , sum(`Total_Charge`)/10000  FROM `g-cloud` group by `For_Month` desc";
         $result=mysqli_query($cxn,$sql);
         $spend = mysqli_fetch_row($result);
-        echo "<p style = \"color:#3366ff; font-size:10pt\">  - July 2014 : ".str_repeat("&nbsp",16)."£".number_format(intval($spend[1])/100)."m</p>";
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - ".date("M Y", strtotime($for_month))." : ".str_repeat("&nbsp",16)."£".number_format(intval($spend[1])/100)."m</p>";
 
         $sql = "SELECT sum(`Total_Charge`)/1000000  FROM `g-cloud` WHERE 1";
         $result=mysqli_query($cxn,$sql);
         $spend = mysqli_fetch_row($result);
         echo "<p style = \"color:#3366ff; font-size:10pt\">  - To date: ".str_repeat("&nbsp",18)."£".number_format(intval($spend[0]))."m</p>";
+		$grand_total_spend = $spend[0];
+		
+        $sql = "SELECT sum(`Total_Charge`)/1000000  FROM `g-cloud` WHERE SME = 'sme'";
+        $result=mysqli_query($cxn,$sql);
+        $spend = mysqli_fetch_row($result);
+        $percent = intval(($spend[0]/$grand_total_spend)*100);
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - SME spend : ".str_repeat("&nbsp",10)."£".number_format(intval($spend[0]))."m</p>";
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - SME % ".str_repeat("&nbsp",23).$percent."%</p>";
+
 
         $sql = "SELECT `message` FROM `sys_messages` WHERE (`key_id` = 'g-cloud import')";
         $result=mysqli_query($cxn,$sql);
         $import_date = mysqli_fetch_row($result);
-        echo "<p style = \"color:#3366ff; font-size:10pt\">Data as at $import_date[0] </p>";
+        echo "<p style = \"color:#3366ff; font-size:10pt\">Data to end ".date("M Y", strtotime($for_month))." </p>";
 
       ?>
 
@@ -75,17 +87,17 @@
         $target_date = Date("Y-m-d");
 		$spend[0] = 0;
 
-        $sql = "SELECT sum(`SpendFinancial2014_15`)/1000000 as 'FY14_15' FROM pipeline WHERE 1";
-        $result=mysqli_query($cxn,$sql);
-        $spend = mysqli_fetch_row($result);
-        $total_spend += $spend[0];
-        echo "<p style = \"color:#3366ff; font-size:10pt\">  - 2014: ".str_repeat("&nbsp",16)." £".number_format(intval($spend[0]))."m</p>";
+//        $sql = "SELECT sum(`SpendFinancial2014_15`)/1000000 as 'FY14_15' FROM pipeline WHERE 1";
+//        $result=mysqli_query($cxn,$sql);
+//        $spend = mysqli_fetch_row($result);
+//        $total_spend += $spend[0];
+//        echo "<p style = \"color:#3366ff; font-size:10pt\">  - 2014: ".str_repeat("&nbsp",16)." £".number_format(intval($spend[0]))."m</p>";
 
         $sql = "SELECT sum(`SpendFinancial2015_16`)/1000000 as 'FY15_16' FROM pipeline WHERE 1";
         $result=mysqli_query($cxn,$sql);
         $spend = mysqli_fetch_row($result);
         $total_spend += $spend[0];
-        echo "<p style = \"color:#3366ff; font-size:10pt\">  - 2015: ".str_repeat("&nbsp",14)." £".number_format(intval($spend[0]))."m</p>";
+        echo "<p style = \"color:#3366ff; font-size:10pt\">  - 2015: ".str_repeat("&nbsp",16)." £".number_format(intval($spend[0]))."m</p>";
 
         $sql = "SELECT sum(`SpendFinancial2016_17`)/1000000 as 'FY16_17' FROM pipeline WHERE 1";
         $result=mysqli_query($cxn,$sql);
@@ -176,23 +188,27 @@
       
       <p style="size:10pt; background-color:#3366FF; color:#ffffff; border-radius:1em; text-align:center; padding:2px;">Updates</p>
       <p style = "color:#3366ff; font-size:10pt"><br><b>Recent updates</b> </p>
-      
-      <p style = "color:#3366ff; font-size:10pt"><br>Aug 26, 2014 - G-Cloud July spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Feb 7, 2015 - G-Cloud December spend added.</p>      
+      <p style = "color:#3366ff; font-size:10pt"><br>Feb 7, 2015 - Spend Pipeline updated.</p>      
+      <p style = "color:#3366ff; font-size:10pt"><br>Dec 16, 2014 - G-Cloud November spend added.</p>      
+      <p style = "color:#3366ff; font-size:10pt"><br>Nov 21, 2014 - G-Cloud October spend added.</p>      
+      <p style = "color:#3366ff; font-size:10pt"><br>Oct 23, 2014 - G-Cloud September spend added.</p>      
+
       <p style = "color:#3366ff; font-size:10pt"><br>Aug 3, 2014 - Spend Pipeline data updated including 2019 forecast.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Sep 25, 2014 - G-Cloud August spend added.</p>      
+      <p style = "color:#3366ff; font-size:10pt"><br>Aug 26, 2014 - G-Cloud July spend added.</p>
       <p style = "color:#3366ff; font-size:10pt"><br>Jul 29, 2014 - G-Cloud June spend added.</p>
       <p style = "color:#3366ff; font-size:10pt"><br>Jun 13, 2014 - G-Cloud May spend added.</p>
       <p style = "color:#3366ff; font-size:10pt"><br>May 16, 2014 - G-Cloud April spend added.</p>
-      </p>
-<?php
-//      <p style = "color:#3366ff; font-size:10pt"><br>Apr 16, 2014 - G-Cloud March spend added.</p>
-//      <p style = "color:#3366ff; font-size:10pt"><br>Mar 21, 2014 - G-Cloud Jan / Feb spend added.</p>
-//      <p style = "color:#3366ff; font-size:10pt"><br>Feb 07, 2014 - G-Cloud December spend added.</p>
-//      <p style = "color:#3366ff; font-size:10pt"><br>Jan 13, 2014 - Spend pipeline beta released.</p>
-//      <p style = "color:#3366ff; font-size:10pt"><br>Jan 8, 2014 - Spend pipeline data updated.</p>
-//      <p style = "color:#3366ff; font-size:10pt"><br>Dec 20, 2013 - G-Cloud November spend added.</p>
- //     <p style = "color:#3366ff; font-size:10pt"><br>Nov 27, 2013 - G-Cloud October spend added.</p>
-//      <p style = "color:#3366ff; font-size:10pt"><br>Oct 18, 2013 - G-Cloud September spend added.</p>
-?>
+      <p style = "color:#3366ff; font-size:10pt"><br>Apr 16, 2014 - G-Cloud March spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Mar 21, 2014 - G-Cloud Jan / Feb spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Feb 07, 2014 - G-Cloud December spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Jan 13, 2014 - Spend pipeline beta released.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Jan 8, 2014 - Spend pipeline data updated.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Dec 20, 2013 - G-Cloud November spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Nov 27, 2013 - G-Cloud October spend added.</p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Oct 18, 2013 - G-Cloud September spend added.</p>
+
       	<p style = "color:#3366ff; font-size:10pt"><br>Follow us on twitter to get news directly:</p> <p>&nbsp</p>
 
     <a href="https://twitter.com/GovSpendOrgUK" class="twitter-follow-button" data-show-count="false">Follow @GovSpendOrgUK</a>
@@ -216,13 +232,25 @@
   <div id="articleborder" >
     <article id="articlecontent" >
 
-      <h2>Helping you win business from the Public Sector</h2>
-
-      <h3>What do we do?</h3>
-      <p>GovSpend.Org.UK analyses published Government data that allows you to understand:</p>
-      
-      <p><b>G-Cloud Spend</b> - What Government has spent, with whom and for how much - allowing you to understand the G-Cloud market for your products and services.
-             For example, if you supply want to see what Cabinet Office is buying, the following link will show you </p>
+      <h2>Knowledge and insight</h2>
+      <p>GovSpend.Org.UK helps organisations to win business with the Public Sector by providing data on historic and future spend.</p>
+<?php
+$suppliers = cz_get("SELECT count(distinct `Supplier`) FROM `g-cloud` WHERE 1 "); 
+$sme_suppliers = cz_get("SELECT count(distinct `Supplier`) FROM `g-cloud` WHERE `SME` = 'sme'"); 
+$total_spend = cz_get("SELECT sum(`Total_Charge`) FROM `g-cloud` WHERE 1");
+$sme_spend = cz_get("SELECT sum(`Total_Charge`) FROM `g-cloud` WHERE `SME` = 'sme'");
+$sme_percent = intval((100 * ($sme_spend/$total_spend)));      
+echo "      <p> To date, $sme_suppliers of the $suppliers companies to win business via G-Cloud are Small and Medium sized Enterprises (SMEs).  Together, those SMEs have supplied over £".intval($sme_spend/1000000)."m (".$sme_percent."%) of services via G-Cloud.</p>"
+?>
+      <p align = "center">' if we can see companies like us winning business with Government, we will be motivated to get involved. '  </p>
+      <p>  We hope that the knowledge and insight provided by this service will encourage more organisations to become suppliers to the Public Sector.</p>
+	  <div align = "center">
+		<iframe width="560" height="315" src="//www.youtube.com/embed/IRiqORaqt-Q" frameborder="0" allowfullscreen></iframe>
+	  <p style ="color:#3366ff; font-size:10pt" ><i>Dev note - The video above doesn't yet include the latest features that we released last weekend.  We will update the video shortly.  Let us know what you think - <a href= "mailto:support@tgovspend.org.uk" >support@govspend.org.uk</a></i></p>
+	  </div>
+	  <p>The two data sets that GovSpend analyses are published monthly by UK Government; G-Cloud spend (the past); and Government's send pipeline (future planned tenders).</p><p>In more detail:</p>      
+      <p><b>G-Cloud spend data</b> - What Government has spent, with whom, on what and how much - allowing you to understand the G-Cloud market for your products and services.
+             For example, if you want to see what Cabinet Office is buying, the following link will show you </p>
              <ul>
 <?php
 //             For example, if you supply 'Agile' services, the following links will show you </p>
@@ -230,20 +258,33 @@
 //             <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Product&rank=total&scope=all&term=Agile" alt = "G-Cloud Agile Sales - showing products">What's being bought</a></li>
 //             <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Supplier&rank=total&scope=all&term=Agile" alt = "G-Cloud Agile Sales - showing suppliers">Who's supplying 'Agile'</a></li>
 ?>
-             <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Supplier&rank=total&scope=all&search_client=cabinet+office" alt = "G-Cloud Agile Sales - showing suppliers">Cabinet Office</a></li>
+             <li><a href="http://www.govspend.org.uk/g-cloud.php?type=Product&rank=total&scope=all&search_client=cabinet+office" alt = "G-Cloud Agile Sales - showing suppliers">Cabinet Office - show total spend and products bought.</a></li>
 
              </ul> 
              <p>You can do your own searches for other products and services by selecting 'G-CLOUD SPEND' from the menu above.</p>
-      <p><b>Spend Pipeline</b> - What Government is planning to spend over the next few years - data includes contact details of the lead procurer and links back to the original notices posted on Government's Contracts Finder service.</p>
+      <p><b>Spend pipeline data</b> - What Government is planning to spend over the next few years - data includes contact details of the lead procurer and links back to the original notices posted on Government's Contracts Finder service.</p>
 <!--      <li><b>Construction Pipeline</b> - Government planned spend on construction.</li>
       <li><b>Other tools</b> are under development.</li>
 -->
-    
+  		<p>You can find links to the original data in the Data Sources section (bottom left of this page). </p>  
+      <h3>Who is using this service?</h3>
+      
+ 	  	<div align = "center">
+     	<img src="govspend_jan_15.png" alt="map of users across the world" width="75%" height="75%">
+		</div>
+		<p>We get about 500 people using the service each month with about 1,000 visits. People are mostly UK based but we are pleasantly surprised by GovSpend's global reach.  People spend an average of 5 minutes on the service each time they visit.</p>
+
+ 	  	<div align = "center">
+     	<img src="govspend_jan_15_u.png" alt="map of users across the world" width="75%" height="75%">
+		</div>
+		<p>  It’s great to see that the people who use the service have an enthusiasm for life.  Are you a lover, a buff or a junkie?  Don't you just love Google Analytics!</p>
+      
       <h3>Thank you</h3>
       <p>Thank you for having a look at GovSpend.Org.UK.  We welcome your suggestions on how we may improve the service.  Choose Contact Us from the menu above
       to get in touch.</p>   
-      
-      <h3>Helpful links</h3>
+	  <p>You are welcome to use and copy any information on this site (including the presentations) as long as you attribute the source as GovSpend.Org.UK (and the source of the data as Cabinet Office).</p>
+
+      <h3>Other services that analyse G-Cloud spend</h3>
       <p>You may also be interested in the following services that explore and analyse Government spend data</p>
 		<ul>
 			<li>	
@@ -260,7 +301,23 @@
 </div>
   
 <?php include ("footer.php"); ?>
- 
+<?php
+
+function cz_get($sql) // executes a SQL statement and returns the results - returns 'none' if no result returned
+{	// used to count things - pass in the sql e.g. 'select count(*) from members'
+	include("init.php");
+	$cz_cxn1 = mysqli_connect("$dbh", "$dbu", "$dbp", "govspend") or die("cannot connect"); 
+	if ($result=mysqli_query($cz_cxn1,$sql))
+	{ 	if ($row= mysqli_fetch_row($result))
+      		{return $row[0];}
+    	else 
+    		{return "none";}
+    }
+    else
+		{return "none";}
+}
+
+?> 
 
 </body>
 </html>

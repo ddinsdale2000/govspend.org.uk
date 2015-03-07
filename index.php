@@ -270,9 +270,9 @@ echo "      <p> To date, $sme_suppliers of the $suppliers companies to win busin
       <h3>Who is using this service?</h3>
       
  	  	<div align = "center">
-     	<img src="govspend_jan_15.png" alt="map of users across the world" width="75%" height="75%">
+     	<img src="govspend_users.png" alt="map of users across the world" width="75%" height="75%">
 		</div>
-		<p>We get about 500 people using the service each month with about 1,000 visits. People are mostly UK based but we are pleasantly surprised by GovSpend's global reach.  People spend an average of 5 minutes on the service each time they visit.</p>
+		<p>We get about 800 people using the service each month with about 1,200 visits. People are mostly UK based and use the service for an average of 5 minutes each time they visit.</p>
 
  	  	<div align = "center">
      	<img src="govspend_jan_15_u.png" alt="map of users across the world" width="75%" height="75%">

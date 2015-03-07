@@ -49,7 +49,7 @@
    $sme = $_GET['sme']; 
    if (strlen($sme)==0){$sme= "all";}
    $chart_type = $_GET['chart']; 
-   if (strlen($chart_type)==0){$chart_type= "m-line";}
+   if (strlen($chart_type)==0){$chart_type= "q-bar";}
 
    if ($scope == "local")      {
        echo "<h1>G-Cloud Spend Analysis - Local Government</h1>";
@@ -284,6 +284,11 @@
 	   	{	echo "<option value=\"total\" selected>Total Spend</option>";}
 	   else
 	   	{	echo "<option value=\"total\">Total Spend</option>";}
+
+	   if ($rank == "sme")
+	   	{	echo "<option value=\"sme\" selected>SME %</option>";}
+	   else
+	   	{	echo "<option value=\"sme\">SME %</option>";}
 		echo "</select>";	   	
 	   
 	   
@@ -304,6 +309,23 @@
 	   	{	echo "<option value=\"q-bar\" selected>Quarterly - bar</option>";}
 	   else
 	   	{	echo "<option value=\"q-bar\">Quarterly - bar</option>";}
+	   if ($chart_type == "sector-bar")
+	   	{	echo "<option value=\"sector-bar\" selected>By sector - bar</option>";}
+	   else
+	   	{	echo "<option value=\"sector-bar\">By sector - bar</option>";}
+	   if ($chart_type == "sector-pie")
+	   	{	echo "<option value=\"sector-pie\" selected>By sector - pie</option>";}
+	   else
+	   	{	echo "<option value=\"sector-pie\">By sector - pie</option>";}
+	   if ($chart_type == "lot-bar")
+	   	{	echo "<option value=\"lot-bar\" selected>By lot - bar</option>";}
+	   else
+	   	{	echo "<option value=\"lot-bar\">By lot - bar</option>";}
+	   if ($chart_type == "lot-pie")
+	   	{	echo "<option value=\"lot-pie\" selected>By lot - pie</option>";}
+	   else
+	   	{	echo "<option value=\"lot-pie\">By lot - pie</option>";}
+
 		echo "</select>";	   	
  		
    		echo "</td>"; 
@@ -320,10 +342,10 @@
        echo "<p style = \"color:#3366ff; font-size:10pt\">For example, to search for all sales of 'Agile' just type the word Agile into the Product box and press the search button.</p>";
 
 //       echo "<p style = \"color:#3366ff; font-size:10pt\"><b>Note 15th Feb 2015</b> - we have expanded the search options above to allow SME and Year as search criteria.  We have also removed the Sector, Detail By and Rank By buttons below and added them to the search box above.  Is that helpful / better?  Feedback welcome - email <a href=\"mailto:support@govspend.org.uk?Subject=GovSpend%20feedback\">support@govspend.org.uk</a></p>";
-       echo "<p style = \"color:#3366ff; font-size:10pt;\"><b>Notes 15th Feb 2015</b></p>";
-       echo "<p style = \"color:#3366ff; font-size:10pt;\"><b>Enhanced analysis features</b> - we have expanded the search options above to allow SME and Year as search criteria.  We have also removed the Sector, Detail By and Rank By buttons below and added them to the search box above along with different chart types.  Is that helpful / better?  Feedback welcome - email us at support@govspend.org.uk</p>";
-		echo "<p style = \"color:#3366ff; font-size:10pt\"><b>Spreadsheet users</b> - We have enhanced GovSpend so that you can copy and paste individual tables into spreadsheets.</p>";
-		echo "<p style = \"color:#3366ff; font-size:10pt\"><b>Twitter</b> - We are trialling the twitter button above to allow people to share their analysis results (copying and pasting the URL works as well). </p>";
+//       echo "<p style = \"color:#3366ff; font-size:10pt;\"><b>Notes 15th Feb 2015</b></p>";
+//       echo "<p style = \"color:#3366ff; font-size:10pt;\"><b>Enhanced analysis features</b> - we have expanded the search options above to allow SME and Year as search criteria.  We have also removed the Sector, Detail By and Rank By buttons below and added them to the search box above along with different chart types.  Is that helpful / better?  Feedback welcome - email us at support@govspend.org.uk</p>";
+//		echo "<p style = \"color:#3366ff; font-size:10pt\"><b>Spreadsheet users</b> - We have enhanced GovSpend so that you can copy and paste individual tables into spreadsheets.</p>";
+//		echo "<p style = \"color:#3366ff; font-size:10pt\"><b>Twitter</b> - We are trialling the twitter button above to allow people to share their analysis results (copying and pasting the URL works as well). </p>";
 //		WARNING twitter has introduced a new service Linkis.com that it uses to shorten URLs in tweets.  We have no control over this feature but are worried by the privacy implications of the Linkis.com service.  Worth consideration.</p>";
 //		echo "<p>URL : $url \< </p>";
 //       }
@@ -355,17 +377,23 @@ if (1) // (($type == "Summary") or ($scope != "all"))
             	SUM(IF(SME='Large',`Total_Charge`,0)) AS `Large`, 
               	SUM(`Total_Charge`) as `Total_Charge`
             	FROM `g-cloud` WHERE 1 ";
+    $sector_sql = "select * from (SELECT sector, sum(`Total_Charge`) as total FROM `g-cloud` where 1 ";        	
+    $lot_sql = "select * from (SELECT lot, sum(`Total_Charge`) as total FROM `g-cloud` where 1 ";        	
 
 	if ((strlen($gs_year)>0) and ($gs_year != "all"))
 	{	
 		$sql .= " and year(`For_Month`) = $gs_year ";
 		$sme_sql .= " and year(`For_Month`) = $gs_year ";
+		$sector_sql .= " and year(`For_Month`) = $gs_year ";
+		$lot_sql .= " and year(`For_Month`) = $gs_year ";
 	}
 
 	if ((strlen($sme)>0) and ($sme != "all"))
 	{	
 		$sql .= " and SME = '$sme' ";
 		$sme_sql .= " and SME = '$sme' ";
+		$sector_sql .= " and SME = '$sme' ";
+		$lot_sql .= " and SME = '$sme' ";
 	}
 
 // Add in the where clause for both / either a product query or a scope query 
@@ -374,6 +402,8 @@ if (1) // (($type == "Summary") or ($scope != "all"))
     if ($scope <> "all") 
     	{ 	$sql = $sql . " and (". $scope_sql .")"; 
     		$sme_sql = $sme_sql . " and (". $scope_sql .")"; 
+    		$sector_sql = $sector_sql . " and (". $scope_sql .")"; 
+    		$lot_sql = $lot_sql . " and (". $scope_sql .")"; 
     		if ($scope <> "central")
             { $summary_level = "k";  
              $dec_places = 0;    
@@ -382,25 +412,33 @@ if (1) // (($type == "Summary") or ($scope != "all"))
    	if ($term <> "all" ) 
       	{ 	$sql = $sql . " and (`Product_Service_Description` LIKE '%". $term ."%')";
       		$sme_sql = $sme_sql . " and (`Product_Service_Description` LIKE '%". $term ."%')";
+      		$sector_sql = $sector_sql . " and (`Product_Service_Description` LIKE '%". $term ."%')";
+      		$lot_sql = $lot_sql . " and (`Product_Service_Description` LIKE '%". $term ."%')";
             $summary_level = "k";        
             $dec_places = 0;      
       	}   
    	if ($search_supplier <> "all" ) 
       	{ 	$sql = $sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
       	 	$sme_sql = $sme_sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
+      	 	$sector_sql = $sector_sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
+      	 	$lot_sql = $lot_sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
             $summary_level = "k";        
             $dec_places = 0;      
       	}   
    	if ($search_client <> "all" ) 
       { 	$sql = $sql . "and (`Customer` LIKE '%". $search_client ."%')";
        		$sme_sql = $sme_sql . "and (`Customer` LIKE '%". $search_client ."%')";
+       		$sector_sql = $sector_sql . "and (`Customer` LIKE '%". $search_client ."%')";
+       		$lot_sql = $lot_sql . "and (`Customer` LIKE '%". $search_client ."%')";
             $summary_level = "k";        
             $dec_places = 0;      
       }   
             
 	$sql=$sql . " GROUP BY fw_year desc";
 	$sme_sql=$sme_sql . " GROUP BY fw_year desc";
-	
+	$sector_sql .= "GROUP BY sector) as s order by total desc ";
+	$lot_sql .= "GROUP BY lot) as s order by lot asc ";
+
 // Execute the SQL Statement            
    $result=mysqli_query($cxn,$sql);
 // Output titles
@@ -464,10 +502,10 @@ if (1) // (($type == "Summary") or ($scope != "all"))
     	  	$spend_2012[10] = intval($spend[10]/$divide_by);
     	  	$spend_2012[11] = intval($spend[11]/$divide_by);
     	  	$spend_2012[12] = intval($spend[12]/$divide_by);
-			$qspend_2012[1] = $spend_2012[1] + $spend_2012[2] + $spend_2012[3] + 0;
-			$qspend_2012[2] = $spend_2012[4] + $spend_2012[5] + $spend_2012[6] + 0;
-			$qspend_2012[3] = $spend_2012[7] + $spend_2012[8] + $spend_2012[9] + 0;
-			$qspend_2012[4] = $spend_2012[10] + $spend_2012[11] + $spend_2012[12] + 0;
+			$qspend_2012[1] = round(($spend[1] + $spend[2] + $spend[3] + 0) / $divide_by,2);
+			$qspend_2012[2] = round(($spend[4] + $spend[5] + $spend[6] + 0) / $divide_by,2);
+			$qspend_2012[3] = round(($spend[7] + $spend[8] + $spend[9] + 0) / $divide_by,2);
+			$qspend_2012[4] = round(($spend[10] + $spend[11] + $spend[12] + 0) / $divide_by,2);
 
     	  }
 		if ($spend[0] == 2013)
@@ -484,10 +522,10 @@ if (1) // (($type == "Summary") or ($scope != "all"))
     	  	$spend_2013[10] = intval($spend[10]/$divide_by);
     	  	$spend_2013[11] = intval($spend[11]/$divide_by);
     	  	$spend_2013[12] = intval($spend[12]/$divide_by);
- 			$qspend_2013[1] = $spend_2013[1] + $spend_2013[2] + $spend_2013[3] + 0;
-			$qspend_2013[2] = $spend_2013[4] + $spend_2013[5] + $spend_2013[6] + 0;
-			$qspend_2013[3] = $spend_2013[7] + $spend_2013[8] + $spend_2013[9] + 0;
-			$qspend_2013[4] = $spend_2013[10] + $spend_2013[11] + $spend_2013[12] + 0;
+ 			$qspend_2013[1] = round(($spend[1] + $spend[2] + $spend[3] + 0) / $divide_by,2);
+			$qspend_2013[2] = round(($spend[4] + $spend[5] + $spend[6] + 0) / $divide_by,2);
+			$qspend_2013[3] = round(($spend[7] + $spend[8] + $spend[9] + 0) / $divide_by,2);
+			$qspend_2013[4] = round(($spend[10] + $spend[11] + $spend[12] + 0) / $divide_by,2);
 
     	  }
 		if ($spend[0] == 2014)
@@ -504,10 +542,10 @@ if (1) // (($type == "Summary") or ($scope != "all"))
     	  	$spend_2014[10] = intval($spend[10]/$divide_by);
     	  	$spend_2014[11] = intval($spend[11]/$divide_by);
     	  	$spend_2014[12] = intval($spend[12]/$divide_by);
-			$qspend_2014[1] = $spend_2014[1] + $spend_2014[2] + $spend_2014[3] + 0;
-			$qspend_2014[2] = $spend_2014[4] + $spend_2014[5] + $spend_2014[6] + 0;
-			$qspend_2014[3] = $spend_2014[7] + $spend_2014[8] + $spend_2014[9] + 0;
-			$qspend_2014[4] = $spend_2014[10] + $spend_2014[11] + $spend_2014[12] + 0;
+			$qspend_2014[1] = round(($spend[1] + $spend[2] + $spend[3] + 0) / $divide_by,2);
+			$qspend_2014[2] = round(($spend[4] + $spend[5] + $spend[6] + 0) / $divide_by,2);
+			$qspend_2014[3] = round(($spend[7] + $spend[8] + $spend[9] + 0) / $divide_by,2);
+			$qspend_2014[4] = round(($spend[10] + $spend[11] + $spend[12] + 0) / $divide_by,2);
 
     	  }
 
@@ -525,10 +563,10 @@ if (1) // (($type == "Summary") or ($scope != "all"))
     	  	$spend_2015[10] = intval($spend[10]/$divide_by);
     	  	$spend_2015[11] = intval($spend[11]/$divide_by);
     	  	$spend_2015[12] = intval($spend[12]/$divide_by);
-			$qspend_2015[1] = $spend_2015[1] + $spend_2015[2] + $spend_2015[3] + 0;
-			$qspend_2015[2] = $spend_2015[4] + $spend_2015[5] + $spend_2015[6] + 0;
-			$qspend_2015[3] = $spend_2015[7] + $spend_2015[8] + $spend_2015[9] + 0;
-			$qspend_2015[4] = $spend_2015[10] + $spend_2015[11] + $spend_2015[12] + 0;
+			$qspend_2015[1] = round(($spend[1] + $spend[2] + $spend[3] + 0) / $divide_by,2);
+			$qspend_2015[2] = round(($spend[4] + $spend[5] + $spend[6] + 0) / $divide_by,2);
+			$qspend_2015[3] = round(($spend[7] + $spend[8] + $spend[9] + 0) / $divide_by,2);
+			$qspend_2015[4] = round(($spend[10] + $spend[11] + $spend[12] + 0) / $divide_by,2);
 
     	  }
 
@@ -594,9 +632,39 @@ if (1) // (($type == "Summary") or ($scope != "all"))
 //    echo "['Q3 2015',  0 ],";
 //    echo "['Q4 2015',  0 ],";
 	echo " ]);";
+	}
+	elseif (($chart_type == "sector-bar") or ($chart_type == "sector-pie")) 
+	{	
+	    echo "function drawChart() {";
+ 	  	 echo "var data = google.visualization.arrayToDataTable([";
+   		 echo "['Sector', 'Spend'],";
+   		 $result=mysqli_query($cxn,$sector_sql);
+   		 while ($spend = mysqli_fetch_row($result))
+			{
+			    echo "['".$spend[0]." £".round((($spend[1] + 0)/1000000),1)."m',  ".round((($spend[1] + 0)/1000000),1)." ],";
 	
+			}
+		echo " ]);";	
+	}
+	elseif (($chart_type == "lot-bar") or ($chart_type == "lot-pie")) 
+	{	
+	    echo "function drawChart() {";
+ 	  	 echo "var data = google.visualization.arrayToDataTable([";
+   		 echo "['Lot', 'Spend'],";
+   		 $result=mysqli_query($cxn,$lot_sql);
+   		 while ($spend = mysqli_fetch_row($result))
+			{
+				if ($spend[0] == 1)
+			    {	echo "['IaaS £".round((($spend[1] + 0)/1000000),1)."m',  ".round((($spend[1] + 0)/1000000),1)." ],";}
+				elseif ($spend[0] == 2)
+			    {	echo "['PaaS £".round((($spend[1] + 0)/1000000),1)."m',  ".round((($spend[1] + 0)/1000000),1)." ],";}
+				elseif ($spend[0] == 3)
+			    {	echo "['SaaS £".round((($spend[1] + 0)/1000000),1)."m',  ".round((($spend[1] + 0)/1000000),1)." ],";}
+				elseif ($spend[0] == 4)
+			    {	echo "['SCS £".round((($spend[1] + 0)/1000000),1)."m',  ".round((($spend[1] + 0)/1000000),1)." ],";}
 	
-	
+			}
+		echo " ]);";	
 	}
 	if ($summary_level == "m")
 	{echo "var options = {title: 'G-Cloud spend - £m'};";}
@@ -608,6 +676,14 @@ if (1) // (($type == "Summary") or ($scope != "all"))
 	{	echo "var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));";}
 	elseif ($chart_type == "q-bar")
 	{	echo "var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));";}
+	elseif ($chart_type == "sector-bar")
+	{	echo "var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));";}
+	elseif ($chart_type == "sector-pie")
+	{	echo "var chart = new google.visualization.PieChart(document.getElementById('chart_div'));";}
+	elseif ($chart_type == "lot-bar")
+	{	echo "var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));";}
+	elseif ($chart_type == "lot-pie")
+	{	echo "var chart = new google.visualization.PieChart(document.getElementById('chart_div'));";}
 	echo "chart.draw(data, options);";
 	echo "}</script>";
   	echo "<p>  <div id=\"chart_div\" style=\"width: 800px; height: 200px;\"></div></p>";
@@ -845,33 +921,42 @@ if (1) // (($type == "Summary") or ($scope != "all"))
        
 //    echo "<p style = \"color:#3366ff; font-size:10pt\"><a href=\"$server/g-cloud.php?type=Summary\"> <- Back to  G-Cloud Spend home page</a></p>";
 
+// select * , ((sme / total_charge)*100) as smep from (SELECT `Customer`, SUM(IF(Lot='1',`Total_Charge`,0)) AS Lot1, SUM(IF(Lot='2',`Total_Charge`,0)) AS Lot2, SUM(IF(Lot='3',`Total_Charge`,0)) AS Lot3, SUM(IF(Lot='4',`Total_Charge`,0)) AS Lot4, sum(`Total_Charge`) as `Total_Charge`, SUM(IF(sme='sme',`Total_Charge`,0)) AS sme FROM `g-cloud` where 1 GROUP BY `Customer`) as q order by smep desc, total_charge desc
+
+//select * , ((sme / total_charge)*100) as smep from (SELECT `Supplier` as name, SUM(IF(Lot='1',`Total_Charge`,0)) AS Lot1, SUM(IF(Lot='2',`Total_Charge`,0)) AS Lot2, SUM(IF(Lot='3',`Total_Charge`,0)) AS Lot3, SUM(IF(Lot='4',`Total_Charge`,0)) AS Lot4, sum(`Total_Charge`) as `Total_Charge`, SUM(IF(sme='sme',`Total_Charge`,0)) AS sme FROM `g-cloud` where 1 and (`Customer` LIKE '%Legal Aid Agency%') GROUP BY Supplier ) as q order by Total_Charge desc
+//select * , ((sme / total_charge)*100) as smep from (SELECT `Supplier` aa name, SUM(IF(Lot='1',`Total_Charge`,0)) AS Lot1, SUM(IF(Lot='2',`Total_Charge`,0)) AS Lot2, SUM(IF(Lot='3',`Total_Charge`,0)) AS Lot3, SUM(IF(Lot='4',`Total_Charge`,0)) AS Lot4, sum(`Total_Charge`) as `Total_Charge`, SUM(IF(sme='sme',`Total_Charge`,0)) AS sme FROM `g-cloud` where 1 and (`Customer` LIKE '%Legal Aid Agency%') GROUP BY `Supplier` ) as q order by Total_Charge desc
+
+
 // Prepare the SQL statement to do the cross tab   
   if ($type == "Supplier")
   { $sql = "SELECT `Supplier`, sum(`Total_Charge`) as 'Total_Charge' FROM `g-cloud` WHERE 1 group by `Supplier`";
-    $sql = "SELECT `Supplier`, 
+    $sql = "select * , ((sme / total_charge)*100) as smep from (SELECT Supplier, 
             SUM(IF(Lot='1',`Total_Charge`,0)) AS Lot1, 
             SUM(IF(Lot='2',`Total_Charge`,0)) AS Lot2,
             SUM(IF(Lot='3',`Total_Charge`,0)) AS Lot3,
             SUM(IF(Lot='4',`Total_Charge`,0)) AS Lot4,
-            sum(`Total_Charge`) as `Total_Charge`
+            sum(`Total_Charge`) as `Total_Charge`,
+            SUM(IF(sme='sme',`Total_Charge`,0)) AS sme
             FROM `g-cloud` where 1 ";}
   elseif ($type == "Product")
   {
-        $sql = "SELECT `Product_Service_Description`, 
+        $sql = "select * , ((sme / total_charge)*100) as smep from (SELECT `Product_Service_Description`, 
             SUM(IF(Lot='1',`Total_Charge`,0)) AS Lot1, 
             SUM(IF(Lot='2',`Total_Charge`,0)) AS Lot2,
             SUM(IF(Lot='3',`Total_Charge`,0)) AS Lot3,
             SUM(IF(Lot='4',`Total_Charge`,0)) AS Lot4,
-            sum(`Total_Charge`) as `Total_Charge`
+            sum(`Total_Charge`) as `Total_Charge`,
+            SUM(IF(sme='sme',`Total_Charge`,0)) AS sme
             FROM `g-cloud` where 1 ";}
   else
   { $sql = "SELECT `Customer`, sum(`Total_Charge`) as 'Total_Charge' FROM `g-cloud` WHERE 1 group by `Customer`";
-    $sql = "SELECT `Customer`, 
+    $sql = "select * , ((sme / total_charge)*100) as smep from (SELECT `Customer`, 
             SUM(IF(Lot='1',`Total_Charge`,0)) AS Lot1, 
             SUM(IF(Lot='2',`Total_Charge`,0)) AS Lot2,
             SUM(IF(Lot='3',`Total_Charge`,0)) AS Lot3,
             SUM(IF(Lot='4',`Total_Charge`,0)) AS Lot4,
-            sum(`Total_Charge`) as `Total_Charge`
+            sum(`Total_Charge`) as `Total_Charge`,
+            SUM(IF(sme='sme',`Total_Charge`,0)) AS sme
             FROM `g-cloud` where 1 ";}
             
             
@@ -900,17 +985,25 @@ if (1) // (($type == "Summary") or ($scope != "all"))
 
 // Add in the group by clauses
   if ($type == "Supplier")
-    {$sql = $sql . " GROUP BY `Supplier`";}
+    {$sql = $sql . " GROUP BY Supplier ";}
   elseif ($type == "Product")
-    {$sql = $sql . " GROUP BY `Product_Service_Description`";}
+    {$sql = $sql . " GROUP BY `Product_Service_Description` ";}
   else
-    {$sql = $sql . " GROUP BY `Customer`";}
+    {$sql = $sql . " GROUP BY `Customer` ";}
 // Add in the sort order - note no sort required if sort order is same as group by column
-  if ($rank == "total") {$sql=$sql." order by Total_Charge desc";}
-  elseif ($rank == "lot1") {$sql=$sql." order by Lot1 desc";}
-  elseif ($rank == "lot2") {$sql=$sql." order by Lot2 desc";}
-  elseif ($rank == "lot3") {$sql=$sql." order by Lot3 desc";}
-  elseif ($rank == "lot4") {$sql=$sql." order by Lot4 desc";}
+  if ($rank == "total") {$sql=$sql." ) as q order by Total_Charge desc";}
+  elseif ($rank == "alpha")
+  {
+  
+	if ($type == "Supplier") {$sql=$sql." ) as q order by Supplier asc";}
+   	elseif ($type == "Product") {$sql=$sql." ) as q order by `Product_Service_Description` asc";}
+ 	else {$sql=$sql." ) as q order by `Customer` asc";}
+  }
+  elseif ($rank == "lot1") {$sql=$sql." ) as q order by Lot1 desc";}
+  elseif ($rank == "lot2") {$sql=$sql." ) as q order by Lot2 desc";}
+  elseif ($rank == "lot3") {$sql=$sql." ) as q order by Lot3 desc";}
+  elseif ($rank == "lot4") {$sql=$sql." ) as q order by Lot4 desc";}
+  elseif ($rank == "sme") {$sql=$sql." ) as q order by smep desc, total_charge desc";}
 
 // echo $sql;
 // Execute the SQL Statement   
@@ -923,7 +1016,7 @@ if (1) // (($type == "Summary") or ($scope != "all"))
    echo "<tr>";
    echo "<th></th>"; // Empty cell for ranking / sequence number
    if ($type == "Supplier") {echo "<th>Supplier</th>";} elseif ($type == "Product") {echo "<th>Product</th>";} else {echo "<th>Customer</th>";}
-   echo "<th align = \"right\">IaaS<br>Lot 1</th><th align = \"right\">PaaS<br>Lot 2</th>";
+   echo "<th align = \"right\">SME %</th><th align = \"right\">IaaS<br>Lot 1</th><th align = \"right\">PaaS<br>Lot 2</th>";
    echo "<th align = \"right\">SaaS<br>Lot 3</th><th align = \"right\">SCS<br>Lot 4</th>";
    echo "<th align = \"right\">Total</th>";
    echo "</tr>";
@@ -952,6 +1045,8 @@ if (1) // (($type == "Summary") or ($scope != "all"))
             { //echo "<td><a href=\"$server/g-cloud_detail.php?type=Customer&rank=$rank&scope=$scope&term=".urlencode($term)."&Customer=".urlencode($spend[0])."\">".$spend[0]."</a></td>";
                 echo "<td><a href=\"$server/g-cloud.php?type=$type&rank=alpha&scope=$scope&term=".urlencode($term)."&search_supplier=".urlencode($search_supplier)."&search_client=".urlencode($spend[0])."\">$spend[0]</a></td>";
             }
+          echo "<td align = \"center\"> ".intval($spend[7])."%</td>";
+          $sme_total += $spend[6];
           echo "<td align = \"right\"> £".number_format(intval($spend[1]))."</td>";
           $grand_total[1] += $spend[1];
 
@@ -973,7 +1068,7 @@ if (1) // (($type == "Summary") or ($scope != "all"))
     }  // End while
 // Output totals 
    if ($colour == 0) {echo "<tr><td></td>";$colour = 1;} else {echo "<tr  class=\"alt\"><td></td>";$colour = 0;} 
-   echo "<td><p style = \"color:#3366ff; font-size:10pt\"><b>Grand Total</b></p></td>";
+   echo "<td><p style = \"color:#3366ff; font-size:10pt\"><b>Grand Total</b></p></td><td></td>";
    echo "<td align = \"right\"> £".number_format(intval($grand_total[1]))."</td>";
    echo "<td align = \"right\"> £".number_format(intval($grand_total[2]))."</td>";
    echo "<td align = \"right\"> £".number_format(intval($grand_total[3]))."</td>";

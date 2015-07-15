@@ -418,13 +418,24 @@ if (1) // (($type == "Summary") or ($scope != "all"))
             $dec_places = 0;      
       	}   
    	if ($search_supplier <> "all" ) 
-      	{ 	$sql = $sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
-      	 	$sme_sql = $sme_sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
-      	 	$sector_sql = $sector_sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
-      	 	$lot_sql = $lot_sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
-            $summary_level = "k";        
-            $dec_places = 0;      
-      	}   
+   		{	if ($search_supplier == "atos" )
+     	 	{ 	$sql = $sql . "and (`Supplier` LIKE '%atos%' or `Supplier` LIKE '%worldline%' or `Supplier` LIKE '%canopy%')";
+      		 	$sme_sql = $sme_sql . "and (`Supplier` LIKE '%atos%' or `Supplier` LIKE '%worldline%' or `Supplier` LIKE '%canopy%')";
+      		 	$sector_sql = $sector_sql . "and (`Supplier` LIKE '%atos%' or `Supplier` LIKE '%worldline%' or `Supplier` LIKE '%canopy%')";
+      		 	$lot_sql = $lot_sql . "and (`Supplier` LIKE '%atos%' or `Supplier` LIKE '%worldline%' or `Supplier` LIKE '%canopy%')";
+      	      	$summary_level = "k";        
+      	      	$dec_places = 0;      
+      		}
+      	
+      	else
+     	 	{ 	$sql = $sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
+      		 	$sme_sql = $sme_sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
+      		 	$sector_sql = $sector_sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
+      		 	$lot_sql = $lot_sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";
+      	      	$summary_level = "k";        
+      	      	$dec_places = 0;      
+      		}
+		}      	 
    	if ($search_client <> "all" ) 
       { 	$sql = $sql . "and (`Customer` LIKE '%". $search_client ."%')";
        		$sme_sql = $sme_sql . "and (`Customer` LIKE '%". $search_client ."%')";
@@ -446,7 +457,7 @@ if (1) // (($type == "Summary") or ($scope != "all"))
    {echo "<h2>G-Cloud monthly spend - £m</h2>";}
    else
    {echo "<h2>G-Cloud monthly spend - £k</h2>";}
-   
+ 
 // Output the table div tag and header row
    echo "<div class=\"datagrid\"><table>";
    echo "<thead>";
@@ -565,6 +576,7 @@ if (1) // (($type == "Summary") or ($scope != "all"))
     	  	$spend_2015[12] = intval($spend[12]/$divide_by);
 			$qspend_2015[1] = round(($spend[1] + $spend[2] + $spend[3] + 0) / $divide_by,2);
 			$qspend_2015[2] = round(($spend[4] + $spend[5] + $spend[6] + 0) / $divide_by,2);
+			$qspend_2015f   = round((($spend[1] + $spend[2] + $spend[3] + 0)*2/4 )/ $divide_by,2);
 			$qspend_2015[3] = round(($spend[7] + $spend[8] + $spend[9] + 0) / $divide_by,2);
 			$qspend_2015[4] = round(($spend[10] + $spend[11] + $spend[12] + 0) / $divide_by,2);
 
@@ -617,21 +629,27 @@ if (1) // (($type == "Summary") or ($scope != "all"))
 	{
     echo "function drawChart() {";
     echo "var data = google.visualization.arrayToDataTable([";
-    echo "['Quarter', 'Spend'],";
-    echo "['All 2012',  ".($qspend_2012[1] + $qspend_2012[2] + $qspend_2012[3] + $qspend_2012[4]+0)." ],";
-    echo "['Q1 2013',  ".($qspend_2013[1] + 0)." ],";
-    echo "['Q2 2013',  ".($qspend_2013[2] + 0)." ],";
-    echo "['Q3 2013',  ".($qspend_2013[3] + 0)." ],";
-    echo "['Q4 2013',  ".($qspend_2013[4] + 0)." ],";
-    echo "['Q1 2014',  ".($qspend_2014[1] + 0)." ],";
-    echo "['Q2 2014',  ".($qspend_2014[2] + 0)." ],";
-    echo "['Q3 2014',  ".($qspend_2014[3] + 0)." ],";
-    echo "['Q4 2014',  ".($qspend_2014[4] + 0)." ],";
+    echo "['Quarter', 'Spend', 'Forecast'],";
+    echo "['All 2012',  ".($qspend_2012[1] + $qspend_2012[2] + $qspend_2012[3] + $qspend_2012[4]+0)." ,0],";
+    echo "['Q1 2013',  ".($qspend_2013[1] + 0).",0 ],";
+    echo "['Q2 2013',  ".($qspend_2013[2] + 0).",0 ],";
+    echo "['Q3 2013',  ".($qspend_2013[3] + 0).",0 ],";
+    echo "['Q4 2013',  ".($qspend_2013[4] + 0).",0 ],";
+    echo "['Q1 2014',  ".($qspend_2014[1] + 0).",0 ],";
+    echo "['Q2 2014',  ".($qspend_2014[2] + 0).",0 ],";
+    echo "['Q3 2014',  ".($qspend_2014[3] + 0).",0 ],";
+    echo "['Q4 2014',  ".($qspend_2014[4] + 0).",0 ],";
+    echo "['Q1 2015',  ".($qspend_2015[1] + 0).",0 ],";
+    echo "['Q2 2015',  ".($qspend_2015[2] + 0).",$qspend_2015f ],";
+//	if ($summary_level == "m")
+//    {	echo "['Q1 2015',  ".($qspend_2015[1] + 0).",60 ],";}
+//	else	
+//    {	echo "['Q1 2015',  ".($qspend_2015[1] + 0).",".(($qspend_2015[1] + 0)*.8)." ],";}
 //    echo "['Q1 2015',  0 ],";
 //    echo "['Q2 2015',  0 ],";
 //    echo "['Q3 2015',  0 ],";
 //    echo "['Q4 2015',  0 ],";
-	echo " ]);";
+	echo " ]);  ";
 	}
 	elseif (($chart_type == "sector-bar") or ($chart_type == "sector-pie")) 
 	{	
@@ -667,9 +685,15 @@ if (1) // (($type == "Summary") or ($scope != "all"))
 		echo " ]);";	
 	}
 	if ($summary_level == "m")
-	{echo "var options = {title: 'G-Cloud spend - £m'};";}
+		if ($chart_type == "q-bar")
+		{	echo "var options = {title: 'G-Cloud spend - £m',  isStacked: true,};";}
+		else
+		{	echo "var options = {title: 'G-Cloud spend - £m'};";}
 	else
-	{echo "var options = {title: 'G-Cloud spend - £k'};";}
+		if ($chart_type == "q-bar")
+		{echo "var options = {title: 'G-Cloud spend - £k', isStacked: true, };";}
+		else
+		{echo "var options = {title: 'G-Cloud spend - £k'};";}
 	if ($chart_type == "m-line")
 	{	echo "var chart = new google.visualization.LineChart(document.getElementById('chart_div'));";}
 	elseif ($chart_type == "m-bar")
@@ -788,7 +812,13 @@ if (1) // (($type == "Summary") or ($scope != "all"))
    	if ($term <> "all" ) 
       	{ $sql = $sql . " and (`Product_Service_Description` LIKE '%". $term ."%')";}   
    	if ($search_supplier <> "all" ) 
-      	{ $sql = $sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";}   
+	   	{	if ($search_supplier == "atos" ) 
+    
+   		   	{ $sql = $sql . "and (`Supplier` LIKE '%atos%' or `Supplier` LIKE '%worldline%' or `Supplier` LIKE '%canopy%')";}   
+			else
+   		   	{ $sql = $sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";}   
+
+		}
    	if ($search_client <> "all" ) 
       { $sql = $sql . "and (`Customer` LIKE '%". $search_client ."%')";}   
 
@@ -978,7 +1008,13 @@ if (1) // (($type == "Summary") or ($scope != "all"))
    	if ($term <> "all" ) 
       	{ $sql = $sql . " and (`Product_Service_Description` LIKE '%". $term ."%')";}   
    	if ($search_supplier <> "all" ) 
-      	{ $sql = $sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";}   
+	   	{	if ($search_supplier == "atos" ) 
+    
+   		   	{ $sql = $sql . "and (`Supplier` LIKE '%atos%' or `Supplier` LIKE '%worldline%' or `Supplier` LIKE '%canopy%')";}   
+			else
+   		   	{ $sql = $sql . "and (`Supplier` LIKE '%". $search_supplier ."%')";}   
+
+		}
    	if ($search_client <> "all" ) 
       { $sql = $sql . "and (`Customer` LIKE '%". $search_client ."%')";}   
 

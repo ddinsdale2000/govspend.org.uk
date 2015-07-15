@@ -35,7 +35,7 @@
       <center>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
       
-      <p> <a href="news.php" class=tv_button>28 Feb 2014 <br>G-Cloud news</a></p>
+      <p> <a href="news.php" class=tv_button>23 Jun 2015 <br>G-Cloud news</a></p>
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
 <!--      <p> <a href="index.php" class=tv_button>Not yet working</a></p> -->
       <p style = "color:#3366ff; font-size:8pt">&nbsp</p>
@@ -188,6 +188,11 @@
       
       <p style="size:10pt; background-color:#3366FF; color:#ffffff; border-radius:1em; text-align:center; padding:2px;">Updates</p>
       <p style = "color:#3366ff; font-size:10pt"><br><b>Recent updates</b> </p>
+      <p style = "color:#3366ff; font-size:10pt"><br>Jun 23, 2015 - G-Cloud May spend added.</p>      
+      <p style = "color:#3366ff; font-size:10pt"><br>May 22, 2015 - G-Cloud Apr spend added.</p>      
+      <p style = "color:#3366ff; font-size:10pt"><br>Apr 30, 2015 - G-Cloud Mar spend added.</p>      
+      <p style = "color:#3366ff; font-size:10pt"><br>Mar 23, 2015 - G-Cloud Feb spend added and pipeline data updated.</p>      
+      <p style = "color:#3366ff; font-size:10pt"><br>Feb 28, 2015 - G-Cloud Jan spend added.</p>      
       <p style = "color:#3366ff; font-size:10pt"><br>Feb 7, 2015 - G-Cloud December spend added.</p>      
       <p style = "color:#3366ff; font-size:10pt"><br>Feb 7, 2015 - Spend Pipeline updated.</p>      
       <p style = "color:#3366ff; font-size:10pt"><br>Dec 16, 2014 - G-Cloud November spend added.</p>      
@@ -246,7 +251,7 @@ echo "      <p> To date, $sme_suppliers of the $suppliers companies to win busin
       <p>  We hope that the knowledge and insight provided by this service will encourage more organisations to become suppliers to the Public Sector.</p>
 	  <div align = "center">
 		<iframe width="560" height="315" src="//www.youtube.com/embed/IRiqORaqt-Q" frameborder="0" allowfullscreen></iframe>
-	  <p style ="color:#3366ff; font-size:10pt" ><i>Dev note - The video above doesn't yet include the latest features that we released last weekend.  We will update the video shortly.  Let us know what you think - <a href= "mailto:support@tgovspend.org.uk" >support@govspend.org.uk</a></i></p>
+	  <p style ="color:#3366ff; font-size:10pt" ><i>Dev note - The video above doesn't yet include the latest features that we released last month.  We will update the video shortly.  Let us know what you think - <a href= "mailto:support@govspend.org.uk" >support@govspend.org.uk</a></i></p>
 	  </div>
 	  <p>The two data sets that GovSpend analyses are published monthly by UK Government; G-Cloud spend (the past); and Government's send pipeline (future planned tenders).</p><p>In more detail:</p>      
       <p><b>G-Cloud spend data</b> - What Government has spent, with whom, on what and how much - allowing you to understand the G-Cloud market for your products and services.
